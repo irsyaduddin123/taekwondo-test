@@ -21,15 +21,18 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-// ✅ Gabungkan middleware di sini langsung (auth + role)
+// Routes untuk admin dan user
 Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('/athletes', [AthleteController::class, 'index'])->name('athletes.index');
     Route::get('/athletes/create', [AthleteController::class, 'create'])->name('athletes.create');
     Route::post('/athletes', [AthleteController::class, 'store'])->name('athletes.store');
-    Route::get('/athletes/{id}/edit', [AthleteController::class, 'edit'])->name('athletes.edit');
-    Route::put('/athletes/{id}', [AthleteController::class, 'update'])->name('athletes.update');
-    Route::delete('/athletes/{id}', [AthleteController::class, 'destroy'])->name('athletes.destroy');
+
+    // Route::get('/athletes/{id}/edit', [AthleteController::class, 'edit'])->name('athletes.edit');
+
+    Route::put('/athletes/{athlete}', [AthleteController::class, 'update'])->name('athletes.update');
+    Route::delete('/athletes/{athlete}', [AthleteController::class, 'destroy'])->name('athletes.destroy');
 });
+
 
 require __DIR__.'/auth.php';
 

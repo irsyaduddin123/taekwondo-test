@@ -14,7 +14,7 @@ class AthleteController extends Controller
 
     public function create()
     {
-        return view('athletes.create');
+        return view('admin.athletes.create');
     }
 
     public function store(Request $request)
@@ -28,13 +28,13 @@ class AthleteController extends Controller
         ]);
 
         Athlete::create($request->all());
-        return redirect()->route('admin.athletes.index')->with('success', 'Data atlet berhasil ditambahkan.');
+        return redirect()->route('athletes.index')->with('success', 'Data atlet berhasil ditambahkan.');
     }
 
-    public function edit(Athlete $athlete)
-    {
-        return view('athletes.edit', compact('athlete'));
-    }
+    // public function edit(Athlete $athlete)
+    // {
+    //     return view('athletes.edit', compact('athlete'));
+    // }
 
     public function update(Request $request, Athlete $athlete)
     {
@@ -46,13 +46,13 @@ class AthleteController extends Controller
             'weight' => 'required',
         ]);
 
-        $athlete->update($request->all());
-        return redirect()->route('admin.athletes.index')->with('success', 'Data atlet berhasil diperbarui.');
+        $athlete->update($request->only(['name','gender','age','height','weight']));
+        return redirect()->route('athletes.index')->with('success', 'Data atlet berhasil diperbarui.');
     }
 
     public function destroy(Athlete $athlete)
     {
         $athlete->delete();
-        return redirect()->route('admin.athletes.index')->with('success', 'Data atlet berhasil dihapus.');
+        return redirect()->route('athletes.index')->with('success', 'Data atlet berhasil dihapus.');
     }
 }
