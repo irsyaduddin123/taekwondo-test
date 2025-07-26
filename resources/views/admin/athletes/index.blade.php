@@ -71,38 +71,32 @@
 </div>
 
 <!-- Modal Edit -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <form id="editForm" method="POST">
         @csrf @method('PUT')
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Atlet</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit mr-1"></i> Edit Atlet
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label>Nama</label>
-                    <input type="text" name="name" id="editName" class="form-control" required>
-                </div>
-                <div class="form-group">
+                @foreach (['name' => 'Nama', 'age' => 'Umur', 'height' => 'Tinggi', 'weight' => 'Berat'] as $field => $label)
+                    <div class="form-group mb-3">
+                        <label>{{ $label }}</label>
+                        <input type="{{ $field == 'name' ? 'text' : 'number' }}" name="{{ $field }}" id="edit{{ ucfirst($field) }}" class="form-control" required>
+                    </div>
+                @endforeach
+                <div class="form-group mb-3">
                     <label>Gender</label>
                     <select name="gender" id="editGender" class="form-control" required>
                         <option value="laki-laki">Laki-laki</option>
                         <option value="perempuan">Perempuan</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label>Umur</label>
-                    <input type="number" name="age" id="editAge" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Tinggi</label>
-                    <input type="number" name="height" id="editHeight" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Berat</label>
-                    <input type="number" name="weight" id="editWeight" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -115,14 +109,16 @@
 </div>
 
 <!-- Modal Hapus -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <form id="deleteForm" method="POST">
         @csrf @method('DELETE')
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Hapus Atlet</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"><i class="fas fa-trash-alt mr-1"></i> Konfirmasi Hapus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <p>Yakin ingin menghapus atlet <strong id="deleteName"></strong>?</p>
@@ -152,7 +148,7 @@ $(document).ready(function() {
         $('#editModal').modal('show');
     });
 
-    // Buka modal Hapus dan set data
+    // Buka modal Hapus dan isi data
     $('.btn-delete').click(function() {
         const id = $(this).data('id');
         const name = $(this).data('name');

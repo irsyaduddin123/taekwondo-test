@@ -24,5 +24,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AthleteSeeder::class,
         ]);
+        $this->call([
+            TestComponentSeeder::class,
+        ]);
     }
 }

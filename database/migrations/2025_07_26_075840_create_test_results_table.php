@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('test_components', function (Blueprint $table) {
+        Schema::create('test_results', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_komponen');
-            $table->enum('jenis', ['fisik', 'teknik']); // komponen fisik atau teknik
-            $table->text('deskripsi')->nullable(); // deskripsi komponen (opsional)
             $table->timestamps();
         });
     }
@@ -25,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('test_components');
+        Schema::dropIfExists('test_results');
     }
 };

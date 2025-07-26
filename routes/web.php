@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\TestComponentController;
 use App\Http\Controllers\AthleteController;
 
 Route::get('/', function () {
@@ -31,6 +32,17 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
 
     Route::put('/athletes/{athlete}', [AthleteController::class, 'update'])->name('athletes.update');
     Route::delete('/athletes/{athlete}', [AthleteController::class, 'destroy'])->name('athletes.destroy');
+
+
+
+    // Test Component Routes (Non-resource)
+    Route::get('/admin/test-components', [TestComponentController::class, 'index'])->name('test_components.index');
+    Route::get('/admin/test-components/create', [TestComponentController::class, 'create'])->name('test_components.create');
+    Route::post('/admin/test-components', [TestComponentController::class, 'store'])->name('test_components.store');
+    Route::get('/admin/test-components/{id}/edit', [TestComponentController::class, 'edit'])->name('test_components.edit');
+    Route::put('/admin/test-components/{id}', [TestComponentController::class, 'update'])->name('test_components.update');
+    Route::delete('/admin/test-components/{id}', [TestComponentController::class, 'destroy'])->name('test_components.destroy');
+
 });
 
 
