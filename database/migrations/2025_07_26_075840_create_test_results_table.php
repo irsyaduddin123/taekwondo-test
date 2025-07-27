@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('test_results', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('athlete_id')->constrained()->onDelete('cascade');
+            $table->foreignId('test_component_id')->constrained()->onDelete('cascade');
+            $table->float('score');
+            $table->date('test_date');
             $table->timestamps();
         });
     }

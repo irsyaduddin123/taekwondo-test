@@ -38,6 +38,13 @@
             <p>Komponen Test</p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="{{ route('test_results.index') }}" class="nav-link">
+            <i class="nav-icon fas fa-poll"></i>
+            <p>Hasil Tes Atlet</p>
+          </a>
+        </li>
+
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

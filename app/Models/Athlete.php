@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Athlete extends Model
 {
     protected $fillable = ['name', 'gender', 'age', 'height', 'weight'];
+
+    public function testResults()
+    {
+        return $this->hasMany(TestResult::class);
+    }
 }
 
