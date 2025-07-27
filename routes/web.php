@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TestResultController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -10,10 +11,9 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-
 // Routes untuk settings (masih dengan auth)
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
