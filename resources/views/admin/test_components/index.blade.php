@@ -38,10 +38,10 @@
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $c->nama_komponen }}</td>
-                        <td>
-                            <span class="badge bg-{{ $c->jenis == 'fisik' ? 'primary' : 'warning' }}">
+                        <td>{{ $c->jenis}}
+                            {{-- <span class="badge bg-{{ $c->jenis == 'fisik' ? 'primary' : 'warning' }}">
                                 {{ ucfirst($c->jenis) }}
-                            </span>
+                            </span> --}}
                         </td>
                         <td class="text-center">
                             <a href="{{ route('test_components.edit', $c->id) }}" class="btn btn-sm btn-warning">

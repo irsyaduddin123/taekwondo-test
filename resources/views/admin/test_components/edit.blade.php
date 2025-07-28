@@ -20,11 +20,16 @@
 
             <div class="form-group mb-3">
                 <label for="jenis">Jenis</label>
-                <select name="jenis" id="jenis" class="form-control" required>
-                    <option value="fisik" {{ $testComponent->jenis == 'fisik' ? 'selected' : '' }}>Fisik</option>
-                    <option value="teknik" {{ $testComponent->jenis == 'teknik' ? 'selected' : '' }}>Teknik</option>
+                <select name="jenis" id="jenisSelect" class="form-control" required>
+                    @foreach ($jenisList as $jenis)
+                        <option value="{{ $jenis }}" {{ $testComponent->jenis == $jenis ? 'selected' : '' }}>
+                            {{ ucfirst($jenis) }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
+
+
 
             <div class="d-flex justify-content-between">
                 <a href="{{ route('test_components.index') }}" class="btn btn-secondary">

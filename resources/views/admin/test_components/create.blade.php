@@ -17,15 +17,19 @@
                 <input type="text" name="nama_komponen" id="nama_komponen" class="form-control" required>
             </div>
 
-            <div class="form-group mb-3">
-                <label for="jenis">Jenis</label>
-                <select name="jenis" id="jenis" class="form-control" required>
+           <div class="form-group mb-3">
+                <label for="jenis">Jenis Komponen</label>
+                <select class="form-control" id="jenisSelect" name="jenis" required>
                     <option value="">-- Pilih Jenis --</option>
-                    <option value="fisik">Fisik</option>
-                    <option value="teknik">Teknik</option>
+                    @foreach ($jenisList as $jenis)
+                        <option value="{{ $jenis }}">{{ ucfirst($jenis) }}</option>
+                    @endforeach
+                    <option value="lainnya">-- Tambah Jenis Baru --</option>
                 </select>
-            </div>
 
+                <input type="text" id="jenisBaru" name="jenis_baru" class="form-control mt-2 d-none" placeholder="Masukkan jenis baru">
+            </div>
+            
             <div class="d-flex justify-content-between">
                 <a href="{{ route('test_components.index') }}" class="btn btn-secondary">
                     <i class="fa fa-arrow-left"></i> Kembali
@@ -38,3 +42,22 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const jenisSelect = document.getElementById("jenisSelect");
+    const jenisBaruInput = document.getElementById("jenisBaru");
+
+    jenisSelect.addEventListener("change", function () {
+        if (this.value === "lainnya") {
+            jenisBaruInput.classList.remove("d-none");
+            jenisBaruInput.required = true;
+        } else {
+            jenisBaruInput.classList.add("d-none");
+            jenisBaruInput.required = false;
+        }
+    });
+});
+</script>
+@endpush
+

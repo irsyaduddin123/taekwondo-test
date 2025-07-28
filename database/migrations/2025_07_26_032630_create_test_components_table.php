@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('test_components', function (Blueprint $table) {
             $table->id();
             $table->string('nama_komponen');
-            $table->enum('jenis', ['fisik', 'teknik']); // komponen fisik atau teknik
+            $table->string('jenis'); // komponen fisik atau teknik
             $table->text('deskripsi')->nullable(); // deskripsi komponen (opsional)
             $table->timestamps();
+            // ['fisik', 'teknik']
         });
     }
 

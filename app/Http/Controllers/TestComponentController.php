@@ -15,43 +15,65 @@ class TestComponentController extends Controller
 
     public function create()
     {
-        return view('admin.test_components.create');
+        $jenisList = TestComponent::select('jenis')->distinct()->pluck('jenis');
+        return view('admin.test_components.create', compact('jenisList'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'nama_komponen' => 'required|string|max:255',
-            'jenis' => 'required|in:fisik,teknik',
+            'jenis' => 'required',
+            'jenis_baru' => 'nullable|string|max:100',
         ]);
 
-        TestComponent::create($validated);
+        $jenis = $request->jenis === 'lainnya' 
+            ? strtolower($request->jenis_baru) 
+            : $request->jenis;
+
+        TestComponent::create([
+            'nama_komponen' => $request->nama_komponen,
+            'jenis' => $jenis,
+        ]);
 
         return redirect()
             ->route('test_components.index')
             ->with('success', '✅ Komponen berhasil ditambahkan.');
     }
 
+
     public function edit($id)
     {
         $testComponent = TestComponent::findOrFail($id);
-        return view('admin.test_components.edit', compact('testComponent'));
+        $jenisList = TestComponent::select('jenis')->distinct()->pluck('jenis');
+
+        return view('admin.test_components.edit', compact('testComponent', 'jenisList'));
     }
+
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $request->validate([
             'nama_komponen' => 'required|string|max:255',
-            'jenis' => 'required|in:fisik,teknik',
+            'jenis' => 'required',
+            'jenis_baru' => 'nullable|string|max:100',
         ]);
 
+        $jenis = $request->jenis === 'lainnya' 
+            ? strtolower($request->jenis_baru) 
+            : $request->jenis;
+
         $testComponent = TestComponent::findOrFail($id);
-        $testComponent->update($validated);
+        $testComponent->update([
+            'nama_komponen' => $request->nama_komponen,
+            'jenis' => $jenis,
+        ]);
 
         return redirect()
             ->route('test_components.index')
             ->with('success', '✅ Komponen berhasil diperbarui.');
     }
+
 
     public function destroy($id)
     {
