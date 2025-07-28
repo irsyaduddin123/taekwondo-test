@@ -72,4 +72,271 @@
   </div>
 </div>
 
+@if (request('athlete_id'))
+  <div class="card mb-4">
+    <div class="card-header font-weight-bold">Presentase Fisik Keseluruhan</div>
+    <div class="card-body text-center">
+      <div class="d-flex justify-content-center flex-wrap gap-3 py-3">
+        @foreach ($dataPersenFisik as $index => $persen)
+          @php
+            // Semakin tinggi skor, semakin biru
+            $warna = 'hsl(210, 80%, ' . (100 - $persen / 1.5) . '%)';
+          @endphp
+          <div class="text-center person-wrapper" title="Rata-rata skor: {{ $persen }}%">
+            <div class="person-container">
+              <div class="person-fill" style="height: {{ $persen }}%; background-color: {{ $warna }}"></div>
+              <div class="person-head"></div>
+            </div>
+            <strong>{{ $persen }}%</strong><br>
+            <small>{{ $labels[$index] }}</small>
+          </div>
+        @endforeach
+      </div>
+    </div>
+  </div>
+@else
+  <div class="card mb-4">
+    <div class="card-header font-weight-bold">Presentase Fisik Keseluruhan</div>
+    <div class="card-body text-center text-muted py-5">
+      <i class="fas fa-info-circle fa-2x mb-2"></i><br>
+      <strong>Silakan pilih nama atlet untuk menampilkan grafik presentase fisik keseluruhan.</strong>
+    </div>
+  </div>
+@endif
+
+
+
+<form method="GET" action="{{ route('dashboard') }}" class="row mb-4">
+  {{-- Filter Atlet --}}
+  <div class="col-md-6">
+    <label for="athlete">Pilih Atlet:</label>
+    <select name="athlete_id" id="athlete" class="form-control" onchange="this.form.submit()">
+      <option value="">Semua Atlet</option>
+      @foreach ($semuaAtlet as $atlet)
+        <option value="{{ $atlet->id }}" {{ request('athlete_id') == $atlet->id ? 'selected' : '' }}>
+          {{ $atlet->name }}
+        </option>
+      @endforeach
+    </select>
+  </div>
+
+  {{-- Filter Komponen Fisik --}}
+  <div class="col-md-6">
+    <label for="komponen_fisik_id"><strong>Komponen Fisik:</strong></label>
+    <select name="komponen_fisik_id" id="komponen_fisik_id" class="form-control" onchange="this.form.submit()">
+      <option value="">Semua Komponen Fisik</option>
+      @foreach ($komponenFisik as $komp)
+        <option value="{{ $komp->id }}" {{ request('komponen_fisik_id') == $komp->id ? 'selected' : '' }}>
+          {{ $komp->nama_komponen }}
+        </option>
+      @endforeach
+    </select>
+  </div>
+</form>
+
+
+<!-- GRAFIK GABUNGAN FISIK (bar+line) -->
+<div class="card mb-4">
+  <div class="card-header font-weight-bold">Grafik Tes Fisik</div>
+  <div class="card-body">
+    <canvas id="chartFisikCombined" style="height: 300px;"></canvas>
+  </div>
+</div>
+
+<!-- TEKNIK -->
+<form method="GET" action="{{ route('dashboard') }}" class="mb-2">
+  <input type="hidden" name="athlete_id" value="{{ request('athlete_id') }}">
+  <label><strong>Pilih Komponen Teknik:</strong></label>
+  <select name="komponen_teknik_id" class="form-control w-100 mb-3" onchange="this.form.submit()">
+    <option value="">Semua Komponen Teknik</option>
+    @foreach ($komponenTeknik as $komp)
+      <option value="{{ $komp->id }}" {{ request('komponen_teknik_id') == $komp->id ? 'selected' : '' }}>
+        {{ $komp->nama_komponen }}
+      </option>
+    @endforeach
+  </select>
+</form>
+
+<!-- GRAFIK TEKNIK -->
+<div class="card mb-4">
+  <div class="card-header font-weight-bold">Grafik Tes Teknik</div>
+  <div class="card-body">
+    <canvas id="chartTeknikLine" style="height: 300px;"></canvas>
+  </div>
+</div>
+
+
+
 @endsection
+
+@push('scripts')
+<style>
+.person-wrapper {
+  width: 60px;
+  margin: 0 8px;
+  position: relative;
+  cursor: pointer;
+}
+
+.person-container {
+  position: relative;
+  height: 100px;
+  width: 40px;
+  background-color: #e0e0e0;
+  border: 2px solid #999;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 0 auto 8px auto;
+}
+
+.person-fill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  transition: height 0.4s ease, background-color 0.4s ease;
+}
+
+.person-head {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border: 2px solid #999;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.person-wrapper[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+</style>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const labels = @json($labels);
+  const dataFisik = @json($dataFisik);
+  const dataTeknik = @json($dataTeknik);
+  const dataPersenFisik = @json($dataPersenFisik);
+
+  new Chart(document.getElementById('chartPersenFisik'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Presentase Fisik (%)',
+        data: dataPersenFisik,
+        backgroundColor: 'rgba(30, 144, 255, 0.7)',
+        borderRadius: 10,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.raw}%`
+          }
+        },
+        title: {
+          display: true,
+          text: 'Presentase Fisik per Bulan'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            callback: value => value + '%'
+          }
+        }
+      }
+    }
+  });
+
+
+  // Grafik Gabungan Tes Fisik (Bar + Line)
+  new Chart(document.getElementById('chartFisikCombined'), {
+    type: 'bar', // base type bar, bisa menampung multi-tipe dataset
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Tes Fisik - Batang',
+          data: dataFisik,
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        },
+        {
+          type: 'line',
+          label: 'Tes Fisik - Garis',
+          data: dataFisik,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          fill: false,
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Diagram Gabungan Tes Fisik (Line + Bar)'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Grafik Teknik Tetap Garis
+  new Chart(document.getElementById('chartTeknikLine'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Tes Teknik - Garis',
+        data: dataTeknik,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.4,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Diagram Garis Tes Teknik'
+        }
+      }
+    }
+  });
+</script>
+@endpush
+
