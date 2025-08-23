@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'profile_photo_url',
     ];
 
     /**
@@ -58,4 +60,16 @@ class User extends Authenticatable
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+        /**
+     * Accessor untuk profile photo url
+     */
+    // public function getProfilePhotoUrlAttribute($value)
+    // {
+    //     if ($value) {
+    //         return asset('storage/' . $value);
+    //     }
+
+    //     return asset('adminlte/dist/img/user2-160x160.jpg');
+    // }
 }

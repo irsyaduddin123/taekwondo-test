@@ -59,7 +59,7 @@
 </div>
 
 {{-- TABEL --}}
-<div class="card shadow-sm">
+{{-- <div class="card shadow-sm">
     <div class="card-body">
         <div class="d-flex justify-content-end mb-3">
             <a href="{{ route('test_results.exportPdf', request()->query()) }}" class="btn btn-success">
@@ -112,5 +112,113 @@
             </table>
         </div>
     </div>
+</div> --}}
+
+{{-- TABEL PER ATLET --}}
+{{-- @foreach ($results->groupBy('athlete_id') as $athleteId => $groupedResults)
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">🏅 {{ $groupedResults->first()->athlete->name }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>#</th>
+                        <th>Komponen Tes</th>
+                        <th>Jenis</th>
+                        <th>Nilai</th>
+                        <th>Bulan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($groupedResults as $index => $r)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $r->testComponent->nama_komponen }}</td>
+                        <td>
+                            <span class="badge bg-{{ $r->testComponent->jenis == 'fisik' ? 'primary' : 'warning' }}">
+                                {{ ucfirst($r->testComponent->jenis) }}
+                            </span>
+                        </td>
+                        <td>{{ $r->score }}</td>
+                        <td>{{ \Carbon\Carbon::parse($r->test_date)->translatedFormat('F') }}</td>
+                        <td>
+                            <form action="{{ route('test_results.destroy', $r->id) }}" method="POST" onsubmit="return confirm('Yakin hapus hasil ini?')" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash-alt"></i> Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+@endforeach --}}
+{{-- DAFTAR HASIL TES PER ATLET --}}
+<div id="accordion">
+  @foreach ($results->groupBy('athlete_id') as $athleteId => $groupedResults)
+  <div class="card">
+    <div class="card-header" id="heading{{ $athleteId }}">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{ $athleteId }}" aria-expanded="false" aria-controls="collapse{{ $athleteId }}">
+          🏅 {{ $groupedResults->first()->athlete->name }}
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapse{{ $athleteId }}" class="collapse" aria-labelledby="heading{{ $athleteId }}" data-parent="#accordion">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover table-striped">
+            <thead class="table-dark">
+              <tr>
+                <th>#</th>
+                <th>Komponen Tes</th>
+                <th>Jenis</th>
+                <th>Nilai</th>
+                <th>Bulan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($groupedResults as $index => $r)
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $r->testComponent->nama_komponen }}</td>
+                <td>
+                  <span class="badge badge-{{ $r->testComponent->jenis == 'fisik' ? 'primary' : 'warning' }}">
+                    {{ ucfirst($r->testComponent->jenis) }}
+                  </span>
+                </td>
+                <td>{{ $r->score }}</td>
+                <td>{{ \Carbon\Carbon::parse($r->test_date)->translatedFormat('F') }}</td>
+                <td>
+                  <form action="{{ route('test_results.destroy', $r->id) }}" method="POST" onsubmit="return confirm('Yakin hapus hasil ini?')" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-sm btn-danger">
+                      <i class="fas fa-trash-alt"></i> Hapus
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  @endforeach
+</div>
+
+
 @endsection

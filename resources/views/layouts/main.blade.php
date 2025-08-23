@@ -13,6 +13,7 @@
 <div class="wrapper">
 
   @include('layouts.navbar')
+  {{-- @include('components.layouts.app.header') --}}
   @include('layouts.sidebar')
 
   <!-- Content Wrapper -->
