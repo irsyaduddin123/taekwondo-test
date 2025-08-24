@@ -37,6 +37,11 @@ public function updatePhoto(Request $request)
 {
     $request->validate([
         'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+    ], [
+        'photo.max' => 'Ukuran file tidak boleh lebih dari 2 MB.', // custom message
+        'photo.required' => 'Silakan pilih file foto.',
+        'photo.image' => 'File harus berupa gambar.',
+        'photo.mimes' => 'Format file harus jpg, jpeg, atau png.',
     ]);
 
     $user = auth()->user();

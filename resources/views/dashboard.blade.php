@@ -78,10 +78,9 @@
     </div>
 </div>
 
-<!-- Filter Form -->
-<form method="GET" action="{{ route('dashboard') }}" class="row mb-4">
-    <!-- Filter Atlet -->
-    <div class="col-md-6">
+<!-- Filter Nama Atlet (satu untuk semua chart) -->
+<form method="GET" action="{{ route('dashboard') }}" class="mb-3 d-flex gap-2 flex-wrap">
+    <div class="col-md-12">
         <label for="athlete">Pilih Atlet:</label>
         <select name="athlete_id" id="athlete" class="form-control" onchange="this.form.submit()">
             <option value="">Semua Atlet</option>
@@ -92,89 +91,62 @@
             @endforeach
         </select>
     </div>
-
-    <!-- Filter Komponen Fisik -->
-    <div class="col-md-6">
-        <label for="komponen_fisik_id"><strong>Komponen Fisik:</strong></label>
-        <select name="komponen_fisik_id" id="komponen_fisik_id" class="form-control" onchange="this.form.submit()">
-            <option value="">Semua Komponen Fisik</option>
-            @foreach ($komponenFisik as $komp)
-                <option value="{{ $komp->id }}" {{ request('komponen_fisik_id') == $komp->id ? 'selected' : '' }}>
-                    {{ $komp->nama_komponen }}
-                </option>
-            @endforeach
-        </select>
-    </div>
 </form>
 
-<!-- Grafik Tes -->
-@php
-    $charts = [
-        ['id' => 'chartFisikCombined', 'title' => 'Grafik Tes Fisik'],
-        ['id' => 'chartTeknikLine', 'title' => 'Grafik Tes Teknik'],
-        ['id' => 'chartMentalLine', 'title' => 'Grafik Tes Mental'],
-    ];
-@endphp
-
-@foreach($charts as $chart)
+<!-- Grafik Tes Fisik -->
 <div class="card mb-4">
-    <div class="card-header font-weight-bold">{{ $chart['title'] }}</div>
+    <div class="card-header font-weight-bold">Grafik Tes Fisik</div>
     <div class="card-body">
-        <canvas id="{{ $chart['id'] }}" style="height: 300px;"></canvas>
+        <form method="GET" action="{{ route('dashboard') }}" class="mb-3 d-flex gap-2 flex-wrap">
+            <input type="hidden" name="athlete_id" value="{{ request('athlete_id') }}">
+            <select name="komponen_fisik_id" class="form-control" onchange="this.form.submit()">
+                <option value="">Semua Komponen Fisik</option>
+                @foreach ($komponenFisik as $komp)
+                    <option value="{{ $komp->id }}" {{ request('komponen_fisik_id') == $komp->id ? 'selected' : '' }}>
+                        {{ $komp->nama_komponen }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
+        <canvas id="chartFisikCombined" style="height: 300px;"></canvas>
     </div>
 </div>
-@endforeach
+
+<!-- Grafik Tes Teknik -->
+<div class="card mb-4">
+    <div class="card-header font-weight-bold">Grafik Tes Teknik</div>
+    <div class="card-body">
+        <form method="GET" action="{{ route('dashboard') }}" class="mb-3 d-flex gap-2 flex-wrap">
+            <input type="hidden" name="athlete_id" value="{{ request('athlete_id') }}">
+            <select name="komponen_teknik_id" class="form-control" onchange="this.form.submit()">
+                <option value="">Semua Komponen Teknik</option>
+                @foreach ($komponenTeknik as $komp)
+                    <option value="{{ $komp->id }}" {{ request('komponen_teknik_id') == $komp->id ? 'selected' : '' }}>
+                        {{ $komp->nama_komponen }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
+        <canvas id="chartTeknikLine" style="height: 300px;"></canvas>
+    </div>
+</div>
+
+<!-- Grafik Tes Mental -->
+<div class="card mb-4">
+    <div class="card-header font-weight-bold">Grafik Tes Mental</div>
+    <div class="card-body">
+        <canvas id="chartMentalLine" style="height: 300px;"></canvas>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
 <style>
-.person-wrapper {
-    width: 60px;
-    margin: 0 8px;
-    position: relative;
-    cursor: pointer;
-}
-.person-container {
-    position: relative;
-    height: 100px;
-    width: 40px;
-    background-color: #e0e0e0;
-    border: 2px solid #999;
-    border-radius: 20px;
-    overflow: hidden;
-    margin: 0 auto 8px auto;
-}
-.person-fill {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    transition: height 0.4s ease, background-color 0.4s ease;
-}
-.person-head {
-    position: absolute;
-    top: -22px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 24px;
-    height: 24px;
-    background-color: #fff;
-    border: 2px solid #999;
-    border-radius: 50%;
-    z-index: 2;
-}
-.person-wrapper[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    top: -32px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.75);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-}
+.person-wrapper { width: 60px; margin: 0 8px; position: relative; cursor: pointer; }
+.person-container { position: relative; height: 100px; width: 40px; background-color: #e0e0e0; border: 2px solid #999; border-radius: 20px; overflow: hidden; margin: 0 auto 8px auto; }
+.person-fill { position: absolute; bottom: 0; width: 100%; transition: height 0.4s ease, background-color 0.4s ease; }
+.person-head { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); width: 24px; height: 24px; background-color: #fff; border: 2px solid #999; border-radius: 50%; z-index: 2; }
+.person-wrapper[title]:hover::after { content: attr(title); position: absolute; top: -32px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap; }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -189,14 +161,7 @@ const dataPersenFisik = @json($dataPersenFisik);
 new Chart(document.getElementById('chartPersenFisik'), {
     type: 'bar',
     data: { labels, datasets: [{ label: 'Presentase Fisik (%)', data: dataPersenFisik, backgroundColor: 'rgba(30, 144, 255, 0.7)', borderRadius: 10, borderSkipped: false }] },
-    options: {
-        plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: ctx => `${ctx.raw}%` } },
-            title: { display: true, text: 'Presentase Fisik per Bulan' }
-        },
-        scales: { y: { beginAtZero: true, max: 100, ticks: { callback: value => value + '%' } } }
-    }
+    options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.raw}%` } }, title: { display: true, text: 'Presentase Fisik per Bulan' } }, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: value => value + '%' } } } }
 });
 
 // Grafik Fisik Gabungan (Bar + Line)
