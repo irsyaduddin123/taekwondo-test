@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Athlete;
-use App\Models\TestComponent;
+use App\Models\ComponentType;
+    use App\Models\TestComponent;
 use App\Models\TestResult;
 use Illuminate\Http\Request;
     use Barryvdh\DomPDF\Facade\Pdf;
@@ -27,12 +28,13 @@ class TestResultController extends Controller
         if ($request->filled('month')) {
             $query->whereMonth('test_date', $request->month);
         }
+        $types = ComponentType::all();
 
         $results = $query->get();
         $components = TestComponent::all();
         $months = TestResult::selectRaw('MONTH(test_date) as month')->distinct()->pluck('month');
 
-        return view('admin.test_results.index', compact('results', 'components', 'months'));
+        return view('admin.test_results.index', compact('results', 'components', 'months','types'));
     }
 
     public function create()
