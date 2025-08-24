@@ -6,150 +6,92 @@ use App\Models\Athlete;
 use App\Models\TestResult;
 use App\Models\TestComponent;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-//    public function index(Request $request)
-//     {
-//         $athleteId = $request->input('athlete_id');
-//         $komponenFisikId = $request->input('komponen_fisik_id');
-//         $komponenTeknikId = $request->input('komponen_teknik_id');
-//         $totfisiktes = TestComponent::where('jenis', 'fisik')->count();
-//         $tottekniktes = TestComponent::where('jenis', 'teknik')->count();
+    public function index(Request $request)
+    {
+        $athleteId = $request->input('athlete_id');
+        $komponenFisikId = $request->input('komponen_fisik_id');
+        $komponenTeknikId = $request->input('komponen_teknik_id');
+        $komponenMentalId = $request->input('komponen_mental_id');
 
+        // Jumlah Tes Fisik & Teknik berdasarkan relasi type
+        $totfisiktes = TestComponent::whereHas('type', fn($q) => $q->where('nama_jenis', 'fisik'))->count();
+        $tottekniktes = TestComponent::whereHas('type', fn($q) => $q->where('nama_jenis', 'teknik'))->count();
+        $totmentaltes = TestComponent::whereHas('type', fn($q) => $q->where('nama_jenis', 'mental'))->count();
 
-//         $labels = [];
-//         $dataFisik = [];
-//         $dataTeknik = [];
-//         $dataPersenFisik = [];
-//         $bulanSekarang = now();
+        $labels = [];
+        $dataFisik = [];
+        $dataTeknik = [];
+        $dataPersenFisik = [];
+        $dataMental = [];
 
-//         for ($i = 5; $i >= 0; $i--) {
-//             $bulan = $bulanSekarang->copy()->subMonths($i);
-//             $labels[] = $bulan->format('M Y');
+        // Ambil daftar bulan & tahun unik dari test_results
+        $bulanList = TestResult::selectRaw('YEAR(test_date) as tahun, MONTH(test_date) as bulan')
+            ->groupBy('tahun', 'bulan')
+            ->orderBy('tahun')
+            ->orderBy('bulan')
+            ->get();
 
-//             // -- Tes Fisik (Bar & Line)
-//             $queryFisik = TestResult::whereMonth('test_date', $bulan->month)
-//                 ->whereYear('test_date', $bulan->year)
-//                 ->whereHas('testComponent', fn($q) => $q->where('jenis', 'fisik'));
+        foreach ($bulanList as $row) {
+            $labels[] = Carbon::create($row->tahun, $row->bulan)->format('M Y');
 
-//             if ($athleteId) $queryFisik->where('athlete_id', $athleteId);
-//             if ($komponenFisikId) $queryFisik->where('test_component_id', $komponenFisikId);
+            // --- Tes Fisik ---
+            $queryFisik = TestResult::whereYear('test_date', $row->tahun)
+                ->whereMonth('test_date', $row->bulan)
+                ->whereHas('testComponent.type', fn($q) => $q->where('nama_jenis', 'fisik'));
 
-//             $avgFisik = round($queryFisik->avg('score') ?? 0, 2);
-//             $dataFisik[] = $avgFisik;
+            if ($athleteId) $queryFisik->where('athlete_id', $athleteId);
+            if ($komponenFisikId) $queryFisik->where('test_component_id', $komponenFisikId);
 
-//             // -- Tes Teknik
-//             $queryTeknik = TestResult::whereMonth('test_date', $bulan->month)
-//                 ->whereYear('test_date', $bulan->year)
-//                 ->whereHas('testComponent', fn($q) => $q->where('jenis', 'teknik'));
+            $dataFisik[] = round($queryFisik->avg('score') ?? 0, 2);
 
-//             if ($athleteId) $queryTeknik->where('athlete_id', $athleteId);
-//             if ($komponenTeknikId) $queryTeknik->where('test_component_id', $komponenTeknikId);
+            // --- Tes Teknik ---
+            $queryTeknik = TestResult::whereYear('test_date', $row->tahun)
+                ->whereMonth('test_date', $row->bulan)
+                ->whereHas('testComponent.type', fn($q) => $q->where('nama_jenis', 'teknik'));
 
-//             $avgTeknik = round($queryTeknik->avg('score') ?? 0, 2);
-//             $dataTeknik[] = $avgTeknik;
-//         }
+            if ($athleteId) $queryTeknik->where('athlete_id', $athleteId);
+            if ($komponenTeknikId) $queryTeknik->where('test_component_id', $komponenTeknikId);
 
-//         // -- Presentase Fisik Keseluruhan (HANYA dari filter nama atlet, tanpa komponen)
-//         for ($i = 5; $i >= 0; $i--) {
-//             $bulan = $bulanSekarang->copy()->subMonths($i);
+            $dataTeknik[] = round($queryTeknik->avg('score') ?? 0, 2);
 
-//             $query = TestResult::whereMonth('test_date', $bulan->month)
-//                 ->whereYear('test_date', $bulan->year)
-//                 ->whereHas('testComponent', fn($q) => $q->where('jenis', 'fisik'));
+             // --- Tes Fisik ---
+            $queryMental = TestResult::whereYear('test_date', $row->tahun)
+                ->whereMonth('test_date', $row->bulan)
+                ->whereHas('testComponent.type', fn($q) => $q->where('nama_jenis', 'mental'));
 
-//             if ($athleteId) {
-//                 $query->where('athlete_id', $athleteId);
-//             }
+            if ($athleteId) $queryMental->where('athlete_id', $athleteId);
+            if ($komponenMentalId) $queryMental->where('test_component_id', $komponenMentalId);
 
-//             $avg = round($query->avg('score') ?? 0);
-//             $dataPersenFisik[] = $avg;
-//         }
+            $dataMental[] = round($queryMental->avg('score') ?? 0, 2);
 
-//         return view('dashboard', [
-//             'jumlahAtlet' => Athlete::count(),
-//             'tesFisik' => $totfisiktes,
-//             'tesTeknik' => $tottekniktes,
-//             'labels' => $labels,
-//             'dataFisik' => $dataFisik,
-//             'dataTeknik' => $dataTeknik,
-//             'dataPersenFisik' => $dataPersenFisik,
-//             'semuaAtlet' => Athlete::all(),
-//             'komponenFisik' => TestComponent::where('jenis', 'fisik')->get(),
-//             'komponenTeknik' => TestComponent::where('jenis', 'teknik')->get(),
-//         ]);
-//     }
+            // --- Persentase Fisik ---
+            $queryPersen = TestResult::whereYear('test_date', $row->tahun)
+                ->whereMonth('test_date', $row->bulan);
+                // ->whereHas('testComponent.type', fn($q) => $q->where('nama_jenis', 'fisik'));
 
+            if ($athleteId) $queryPersen->where('athlete_id', $athleteId);
 
-public function index(Request $request)
-{
-    $athleteId = $request->input('athlete_id');
-    $komponenFisikId = $request->input('komponen_fisik_id');
-    $komponenTeknikId = $request->input('komponen_teknik_id');
-    $totfisiktes = TestComponent::where('jenis', 'fisik')->count();
-    $tottekniktes = TestComponent::where('jenis', 'teknik')->count();
+            $dataPersenFisik[] = round($queryPersen->avg('score') ?? 0);
+        }
 
-    $labels = [];
-    $dataFisik = [];
-    $dataTeknik = [];
-    $dataPersenFisik = [];
-
-    // 🔹 Ambil semua bulan & tahun unik dari database test_results
-    $bulanList = TestResult::selectRaw('YEAR(test_date) as tahun, MONTH(test_date) as bulan')
-        ->groupBy('tahun', 'bulan')
-        ->orderBy('tahun')
-        ->orderBy('bulan')
-        ->get();
-
-    foreach ($bulanList as $row) {
-        $labels[] = \Carbon\Carbon::create($row->tahun, $row->bulan)->format('M Y');
-
-        // Tes Fisik
-        $queryFisik = TestResult::whereYear('test_date', $row->tahun)
-            ->whereMonth('test_date', $row->bulan)
-            ->whereHas('testComponent', fn($q) => $q->where('jenis', 'fisik'));
-
-        if ($athleteId) $queryFisik->where('athlete_id', $athleteId);
-        if ($komponenFisikId) $queryFisik->where('test_component_id', $komponenFisikId);
-
-        $avgFisik = round($queryFisik->avg('score') ?? 0, 2);
-        $dataFisik[] = $avgFisik;
-
-        // Tes Teknik
-        $queryTeknik = TestResult::whereYear('test_date', $row->tahun)
-            ->whereMonth('test_date', $row->bulan)
-            ->whereHas('testComponent', fn($q) => $q->where('jenis', 'teknik'));
-
-        if ($athleteId) $queryTeknik->where('athlete_id', $athleteId);
-        if ($komponenTeknikId) $queryTeknik->where('test_component_id', $komponenTeknikId);
-
-        $avgTeknik = round($queryTeknik->avg('score') ?? 0, 2);
-        $dataTeknik[] = $avgTeknik;
-
-        // Persentase Fisik (tanpa filter komponen)
-        $queryPersen = TestResult::whereYear('test_date', $row->tahun)
-            ->whereMonth('test_date', $row->bulan)
-            ->whereHas('testComponent', fn($q) => $q->where('jenis', 'fisik'));
-
-        if ($athleteId) $queryPersen->where('athlete_id', $athleteId);
-
-        $avgPersen = round($queryPersen->avg('score') ?? 0);
-        $dataPersenFisik[] = $avgPersen;
+        return view('dashboard', [
+            'jumlahAtlet' => Athlete::count(),
+            'tesFisik' => $totfisiktes,
+            'tesTeknik' => $tottekniktes,
+            'tesMental' => $totmentaltes,
+            
+            'labels' => $labels,
+            'dataFisik' => $dataFisik,
+            'dataTeknik' => $dataTeknik,
+            'dataMental' => $dataMental,
+            'dataPersenFisik' => $dataPersenFisik,
+            'semuaAtlet' => Athlete::all(),
+            'komponenFisik' => TestComponent::whereHas('type', fn($q) => $q->where('nama_jenis', 'fisik'))->get(),
+            'komponenTeknik' => TestComponent::whereHas('type', fn($q) => $q->where('nama_jenis', 'teknik'))->get(),
+        ]);
     }
-
-    return view('dashboard', [
-        'jumlahAtlet' => Athlete::count(),
-        'tesFisik' => $totfisiktes,
-        'tesTeknik' => $tottekniktes,
-        'labels' => $labels,
-        'dataFisik' => $dataFisik,
-        'dataTeknik' => $dataTeknik,
-        'dataPersenFisik' => $dataPersenFisik,
-        'semuaAtlet' => Athlete::all(),
-        'komponenFisik' => TestComponent::where('jenis', 'fisik')->get(),
-        'komponenTeknik' => TestComponent::where('jenis', 'teknik')->get(),
-    ]);
 }
-}
-
