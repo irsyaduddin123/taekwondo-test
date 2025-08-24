@@ -17,17 +17,14 @@
                 <input type="text" name="nama_komponen" id="nama_komponen" class="form-control" required>
             </div>
 
-           <div class="form-group mb-3">
+            <div class="form-group mb-3">
                 <label for="jenis">Jenis Komponen</label>
-                <select class="form-control" id="jenisSelect" name="jenis" required>
+                <select class="form-control" id="jenisSelect" name="jenis_id" required>
                     <option value="">-- Pilih Jenis --</option>
-                    @foreach ($jenisList as $jenis)
-                        <option value="{{ $jenis }}">{{ ucfirst($jenis) }}</option>
+                    @foreach ($jenisList as $id => $nama)
+                        <option value="{{ $id }}">{{ ucfirst($nama) }}</option>
                     @endforeach
-                    <option value="lainnya">-- Tambah Jenis Baru --</option>
                 </select>
-
-                <input type="text" id="jenisBaru" name="jenis_baru" class="form-control mt-2 d-none" placeholder="Masukkan jenis baru">
             </div>
             
             <div class="d-flex justify-content-between">
@@ -42,22 +39,3 @@
     </div>
 </div>
 @endsection
-@push('scripts')
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const jenisSelect = document.getElementById("jenisSelect");
-    const jenisBaruInput = document.getElementById("jenisBaru");
-
-    jenisSelect.addEventListener("change", function () {
-        if (this.value === "lainnya") {
-            jenisBaruInput.classList.remove("d-none");
-            jenisBaruInput.required = true;
-        } else {
-            jenisBaruInput.classList.add("d-none");
-            jenisBaruInput.required = false;
-        }
-    });
-});
-</script>
-@endpush
-

@@ -11,13 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // tabel master jenis komponen
+        Schema::create('component_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_jenis'); // contoh: fisik, teknik, psikologis
+            $table->timestamps();
+        });
+
+        // tabel komponen tes
         Schema::create('test_components', function (Blueprint $table) {
             $table->id();
             $table->string('nama_komponen');
-            $table->string('jenis'); // komponen fisik atau teknik
-            $table->text('deskripsi')->nullable(); // deskripsi komponen (opsional)
+            $table->foreignId('jenis_id')
+                  ->constrained('component_types')
+                  ->cascadeOnDelete(); 
+            $table->text('deskripsi')->nullable(); 
             $table->timestamps();
-            // ['fisik', 'teknik']
         });
     }
 
@@ -27,5 +36,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('test_components');
+        Schema::dropIfExists('component_types');
     }
 };

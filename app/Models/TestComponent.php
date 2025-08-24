@@ -6,19 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class TestComponent extends Model
 {
-    protected $table = 'test_components'; // Nama tabel (opsional jika sesuai konvensi)
+    protected $table = 'test_components';
 
     protected $fillable = [
         'nama_komponen',
-        'jenis',
-        'deskripsi', // kalau kamu pakai kolom ini
+        'jenis_id',
+        'deskripsi',
     ];
 
-    // (Opsional) Jika kamu punya relasi dengan model lain, bisa ditambahkan di sini.
-    // Misal: satu komponen bisa digunakan di banyak hasil tes
-
-    // public function testResults()
-    // {
-    //     return $this->hasMany(TestResult::class);
-    // }
+    // Relasi: satu komponen dimiliki oleh satu jenis
+    public function type()
+    {
+        return $this->belongsTo(ComponentType::class, 'jenis_id');
+    }
 }

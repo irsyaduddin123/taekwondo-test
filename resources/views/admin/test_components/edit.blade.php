@@ -9,27 +9,33 @@
 @section('content')
 <div class="card shadow-sm">
     <div class="card-body">
-        <form action="{{ route('test_components.update', $testComponent->id) }}" method="POST">
+        <form action="{{ route('test_components.update', $component->id) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="form-group mb-3">
                 <label for="nama_komponen">Nama Komponen</label>
-                <input type="text" name="nama_komponen" id="nama_komponen" class="form-control" value="{{ $testComponent->nama_komponen }}" required>
+                <input type="text" name="nama_komponen" id="nama_komponen" 
+                       class="form-control" 
+                       value="{{ old('nama_komponen', $component->nama_komponen) }}" required>
             </div>
 
             <div class="form-group mb-3">
-                <label for="jenis">Jenis</label>
-                <select name="jenis" id="jenisSelect" class="form-control" required>
-                    @foreach ($jenisList as $jenis)
-                        <option value="{{ $jenis }}" {{ $testComponent->jenis == $jenis ? 'selected' : '' }}>
-                            {{ ucfirst($jenis) }}
+                <label for="jenis_id">Jenis Komponen</label>
+                <select name="jenis_id" id="jenisSelect" class="form-control" required>
+                    <option value="">-- Pilih Jenis --</option>
+                    @foreach ($jenisList as $id => $nama)
+                        <option value="{{ $id }}" {{ $component->jenis_id == $id ? 'selected' : '' }}>
+                            {{ ucfirst($nama) }}
                         </option>
                     @endforeach
                 </select>
             </div>
-
-
+{{-- 
+            <div class="form-group mb-3">
+                <label for="deskripsi">Deskripsi</label>
+                <textarea name="deskripsi" id="deskripsi" class="form-control" rows="3">{{ old('deskripsi', $component->deskripsi) }}</textarea>
+            </div> --}}
 
             <div class="d-flex justify-content-between">
                 <a href="{{ route('test_components.index') }}" class="btn btn-secondary">

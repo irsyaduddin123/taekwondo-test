@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,18 +12,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // buat user admin default
         User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@admin.com',
             'role' => 'admin',
-            'password' => bcrypt(value: 'admin123')
+            'password' => bcrypt('admin123'),
         ]);
+
+        // panggil seeder lain
         $this->call([
             AthleteSeeder::class,
-        ]);
-        $this->call([
             TestComponentSeeder::class,
         ]);
     }

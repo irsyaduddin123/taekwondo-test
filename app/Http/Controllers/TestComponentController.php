@@ -3,85 +3,102 @@
 namespace App\Http\Controllers;
 
 use App\Models\TestComponent;
+use App\Models\ComponentType;
 use Illuminate\Http\Request;
 
 class TestComponentController extends Controller
 {
+    // ========================
+    // CRUD Test Components
+    // ========================
     public function index()
     {
-        $components = TestComponent::all();
-        return view('admin.test_components.index', compact('components'));
+        $components = TestComponent::with('type')->get();
+        $types = ComponentType::all(); // supaya bisa ditampilkan di view
+
+        return view('admin.test_components.index', compact('components', 'types'));
     }
 
-    public function create()
+    public function createComponent()
     {
-        $jenisList = TestComponent::select('jenis')->distinct()->pluck('jenis');
+        $jenisList = ComponentType::pluck('nama_jenis', 'id'); // [id => nama]
         return view('admin.test_components.create', compact('jenisList'));
     }
 
-    public function store(Request $request)
+    public function storeComponent(Request $request)
     {
         $request->validate([
             'nama_komponen' => 'required|string|max:255',
-            'jenis' => 'required',
-            'jenis_baru' => 'nullable|string|max:100',
+            'jenis_id'      => 'required|exists:component_types,id',
+            'deskripsi'     => 'nullable|string',
         ]);
 
-        $jenis = $request->jenis === 'lainnya' 
-            ? strtolower($request->jenis_baru) 
-            : $request->jenis;
+        TestComponent::create($request->only(['nama_komponen', 'jenis_id', 'deskripsi']));
 
-        TestComponent::create([
-            'nama_komponen' => $request->nama_komponen,
-            'jenis' => $jenis,
-        ]);
-
-        return redirect()
-            ->route('test_components.index')
-            ->with('success', '✅ Komponen berhasil ditambahkan.');
+        return redirect()->route('test_components.index')
+                         ->with('success', '✅ Komponen tes berhasil ditambahkan!');
     }
 
-
-    public function edit($id)
+    public function editComponent($id)
     {
-        $testComponent = TestComponent::findOrFail($id);
-        $jenisList = TestComponent::select('jenis')->distinct()->pluck('jenis');
+        $component  = TestComponent::findOrFail($id);
+        $jenisList  = ComponentType::pluck('nama_jenis', 'id');
 
-        return view('admin.test_components.edit', compact('testComponent', 'jenisList'));
+        return view('admin.test_components.edit', compact('component', 'jenisList'));
     }
 
-
-    public function update(Request $request, $id)
+    public function updateComponent(Request $request, $id)
     {
         $request->validate([
             'nama_komponen' => 'required|string|max:255',
-            'jenis' => 'required',
-            'jenis_baru' => 'nullable|string|max:100',
+            'jenis_id'      => 'required|exists:component_types,id',
+            'deskripsi'     => 'nullable|string',
         ]);
 
-        $jenis = $request->jenis === 'lainnya' 
-            ? strtolower($request->jenis_baru) 
-            : $request->jenis;
+        $component = TestComponent::findOrFail($id);
+        $component->update($request->only(['nama_komponen', 'jenis_id', 'deskripsi']));
 
-        $testComponent = TestComponent::findOrFail($id);
-        $testComponent->update([
-            'nama_komponen' => $request->nama_komponen,
-            'jenis' => $jenis,
-        ]);
-
-        return redirect()
-            ->route('test_components.index')
-            ->with('success', '✅ Komponen berhasil diperbarui.');
+        return redirect()->route('test_components.index')
+                         ->with('success', '✅ Komponen tes berhasil diperbarui!');
     }
 
-
-    public function destroy($id)
+    public function destroyComponent($id)
     {
-        $testComponent = TestComponent::findOrFail($id);
-        $testComponent->delete();
+        TestComponent::findOrFail($id)->delete();
 
-        return redirect()
-            ->route('test_components.index')
-            ->with('success', '🗑️ Komponen berhasil dihapus.');
+        return back()->with('success', '🗑️ Komponen tes berhasil dihapus.');
+    }
+
+    // ========================
+    // CRUD Component Types
+    // ========================
+    public function storeType(Request $request)
+    {
+        $request->validate([
+            'nama_jenis' => 'required|string|max:255|unique:component_types,nama_jenis',
+        ]);
+
+        ComponentType::create(['nama_jenis' => $request->nama_jenis]);
+
+        return back()->with('success', '✅ Jenis komponen berhasil ditambahkan.');
+    }
+
+    public function updateType(Request $request, $id)
+    {
+        $request->validate([
+            'nama_jenis' => 'required|string|max:255|unique:component_types,nama_jenis,' . $id,
+        ]);
+
+        $type = ComponentType::findOrFail($id);
+        $type->update(['nama_jenis' => $request->nama_jenis]);
+
+        return back()->with('success', '✅ Jenis komponen berhasil diperbarui.');
+    }
+
+    public function destroyType($id)
+    {
+        ComponentType::findOrFail($id)->delete();
+
+        return back()->with('success', '🗑️ Jenis komponen berhasil dihapus.');
     }
 }
