@@ -4,6 +4,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestResultController;
 use App\Http\Controllers\User\DashboardUserController;
@@ -81,6 +82,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/test-results', [TestResultController::class, 'store'])->name('test_results.store');
     Route::delete('/admin/test-results/{id}', [TestResultController::class, 'destroy'])->name('test_results.destroy');
     Route::get('/admin/test-results/export-pdf', [TestResultController::class, 'exportPdf'])->name('test_results.exportPdf');
+
+    //Pengguna
+    Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/pengguna', [PenggunaController::class, 'index'])->name('admin.pengguna');
+    Route::put('/users/{id}/role', [PenggunaController::class, 'updateRole'])->name('admin.users.updateRole');
+    Route::put('/athletes/{id}/user', [PenggunaController::class, 'updateUser'])->name('admin.athletes.updateUser');
+});
+
 });
 
 // ========================

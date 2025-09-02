@@ -55,6 +55,13 @@
             <p>Hasil Tes Atlet</p>
           </a>
         </li>
+        
+        <li class="nav-item">
+          <a href="{{ route('admin.pengguna') }}" class="nav-link">
+            <i class="nav-icon fas fa-poll"></i>
+            <p>Pengguna</p>
+          </a>
+        </li>
 
         <!-- Annual Plan Dropdown -->
         <li class="nav-item has-treeview">
