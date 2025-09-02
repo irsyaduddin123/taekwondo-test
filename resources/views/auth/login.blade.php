@@ -70,7 +70,7 @@
             <label for="password" class="form-label fw-semibold">Password</label>
             <input type="password" name="password" class="form-control" id="password" placeholder="********" required>
             <div class="text-end mt-1">
-                <a href="{{ route('password.request') }}" class="small text-decoration-none" style="color:#6366f1;">Lupa password?</a>
+                <a href="#" class="small text-decoration-none" style="color:#6366f1;">Lupa password?</a>
             </div>
         </div>
 

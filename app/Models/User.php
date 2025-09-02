@@ -72,4 +72,8 @@ class User extends Authenticatable
 
     //     return asset('adminlte/dist/img/user2-160x160.jpg');
     // }
+    public function athlete()
+{
+    return $this->hasOne(Athlete::class);
+}
 }

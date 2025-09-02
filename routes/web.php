@@ -1,23 +1,40 @@
 <?php
 
+
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestResultController;
-use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
+use App\Http\Controllers\User\DashboardUserController;
+use App\Http\Controllers\ViewUserController;
 use App\Http\Controllers\TestComponentController;
 use App\Http\Controllers\AthleteController;
 
+use Livewire\Volt\Volt;
+use Illuminate\Support\Facades\Route;
+
+// ========================
+// Halaman utama
+// ========================
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// ========================
+// Login & Logout
+// ========================
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
+});
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // ========================
-// Settings (auth wajib)
+// Routes settings (auth wajib)
 // ========================
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -32,9 +49,11 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ========================
-// Routes untuk admin & user
+// Routes admin
 // ========================
-Route::middleware(['auth', 'role:admin,user'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     // Athletes
     Route::get('/athletes', [AthleteController::class, 'index'])->name('athletes.index');
     Route::get('/athletes/create', [AthleteController::class, 'create'])->name('athletes.create');
@@ -42,37 +61,32 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::put('/athletes/{athlete}', [AthleteController::class, 'update'])->name('athletes.update');
     Route::delete('/athletes/{athlete}', [AthleteController::class, 'destroy'])->name('athletes.destroy');
 
-    // ========================
-    // Grouping admin
-    // ========================
-    Route::prefix('admin')->group(function () {
-        // --- Test Components & Types ---
-        // --- Test Components ---
-            Route::prefix('test-components')->group(function () {
-                // Index
-                Route::get('/', [TestComponentController::class, 'index'])->name('test_components.index');
+    // Test Components & Types
+    Route::prefix('admin/test-components')->group(function () {
+        Route::get('/', [TestComponentController::class, 'index'])->name('test_components.index');
+        Route::get('/create', [TestComponentController::class, 'createComponent'])->name('test_components.create');
+        Route::post('/store', [TestComponentController::class, 'storeComponent'])->name('test_components.store');
+        Route::get('/{id}/edit', [TestComponentController::class, 'editComponent'])->name('test_components.edit');
+        Route::put('/{id}/update', [TestComponentController::class, 'updateComponent'])->name('test_components.update');
+        Route::delete('/{id}/delete', [TestComponentController::class, 'destroyComponent'])->name('test_components.destroy');
 
-                // Components (pindah halaman)
-                Route::get('/create', [TestComponentController::class, 'createComponent'])->name('test_components.create');
-                Route::post('/store', [TestComponentController::class, 'storeComponent'])->name('test_components.store');
-                Route::get('/{id}/edit', [TestComponentController::class, 'editComponent'])->name('test_components.edit');
-                Route::put('/{id}/update', [TestComponentController::class, 'updateComponent'])->name('test_components.update');
-                Route::delete('/{id}/delete', [TestComponentController::class, 'destroyComponent'])->name('test_components.destroy');
-
-                // Types (pakai modal)
-                Route::post('/types/store', [TestComponentController::class, 'storeType'])->name('component_types.store');
-                Route::put('/types/{id}/update', [TestComponentController::class, 'updateType'])->name('component_types.update');
-                Route::delete('/types/{id}/delete', [TestComponentController::class, 'destroyType'])->name('component_types.destroy');
-            });
-
-
-        // --- Test Results ---
-        Route::get('/test-results', [TestResultController::class, 'index'])->name('test_results.index');
-        Route::get('/test-results/create', [TestResultController::class, 'create'])->name('test_results.create');
-        Route::post('/test-results', [TestResultController::class, 'store'])->name('test_results.store');
-        Route::delete('/test-results/{id}', [TestResultController::class, 'destroy'])->name('test_results.destroy');
-        Route::get('/test-results/export-pdf', [TestResultController::class, 'exportPdf'])->name('test_results.exportPdf');
+        Route::post('/types/store', [TestComponentController::class, 'storeType'])->name('component_types.store');
+        Route::put('/types/{id}/update', [TestComponentController::class, 'updateType'])->name('component_types.update');
+        Route::delete('/types/{id}/delete', [TestComponentController::class, 'destroyType'])->name('component_types.destroy');
     });
+
+    // Test Results
+    Route::get('/admin/test-results', [TestResultController::class, 'index'])->name('test_results.index');
+    Route::get('/admin/test-results/create', [TestResultController::class, 'create'])->name('test_results.create');
+    Route::post('/admin/test-results', [TestResultController::class, 'store'])->name('test_results.store');
+    Route::delete('/admin/test-results/{id}', [TestResultController::class, 'destroy'])->name('test_results.destroy');
+    Route::get('/admin/test-results/export-pdf', [TestResultController::class, 'exportPdf'])->name('test_results.exportPdf');
 });
 
-require __DIR__.'/auth.php';
+// ========================
+// Routes user
+// ========================
+Route::middleware(['auth', 'role:user'])->group(function () {
+    // Route::get('/user', [ViewUserController::class,'index'])->name('user.index');
+    Route::get('/user',[DashboardUserController::class,'index'])->name('dashboarduser');
+});
