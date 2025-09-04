@@ -37,7 +37,7 @@
 
         <li class="nav-item">
           <a href="{{ route('athletes.index') }}" class="nav-link">
-            <i class="nav-icon fas fa-user"></i>
+            <i class="nav-icon fas fa-medal"></i>
             <p>Athlete</p>
           </a>
         </li>
@@ -58,7 +58,7 @@
         
         <li class="nav-item">
           <a href="{{ route('admin.pengguna') }}" class="nav-link">
-            <i class="nav-icon fas fa-poll"></i>
+            <i class="nav-icon fas fa-users"></i>
             <p>Pengguna</p>
           </a>
         </li>

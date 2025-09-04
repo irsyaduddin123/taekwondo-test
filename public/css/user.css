@@ -1,0 +1,87 @@
+/* Sidebar */
+.sidebar-custom {
+    background: linear-gradient(180deg, #1e3c72, #2a5298); /* biru ke ungu */
+    min-height: 100vh;
+    color: #fff;
+    padding: 20px;
+    border-right: 2px solid rgba(255,255,255,0.1);
+}
+
+/* Styling foto profil */
+.sidebar-custom .profile-user-img {
+    border: 3px solid #444;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+
+/* Tombol edit foto (pencil) */
+.sidebar-custom .btn.btn-primary.position-absolute {
+    background-color: #00bcd4; /* biru toska biar kontras */
+    border: none;
+    color: #fff;
+    padding: 6px 8px;
+    font-size: 14px;
+    line-height: 1;
+    z-index: 5; /* biar ga ketutupan foto */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.sidebar-custom .btn.btn-primary.position-absolute:hover {
+    background-color: #0097a7;
+    color: #fff;
+}
+
+/* Nama user */
+.sidebar-custom h4 {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Email user */
+.sidebar-custom p {
+    color: #cfd8dc;
+    font-size: 14px;
+}
+
+/* Nav button */
+.sidebar-custom .btn {
+    text-align: left;
+    font-weight: 500;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+/* Normal state */
+.sidebar-custom .btn-outline-light {
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
+}
+
+/* Hover state */
+.sidebar-custom .btn-outline-light:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+/* Active state */
+.sidebar-custom .btn-light.text-primary {
+    background-color: #333 !important;
+    color: #00bcd4 !important;
+    font-weight: 600;
+}
+
+/* Tombol logout */
+.sidebar-custom .btn-outline-danger {
+    border-color: #ef5350;
+    color: #ef5350;
+    font-weight: bold;
+}
+.sidebar-custom .btn-outline-danger:hover {
+    background-color: #ef5350;
+    color: #fff;
+}
+
+/* Background main content */
+.main-content {
+    background: #8797ae; /* abu terang */
+    min-height: 100vh;
+    padding: 20px;
+}

@@ -8,6 +8,8 @@ use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestResultController;
 use App\Http\Controllers\User\DashboardUserController;
+use App\Http\Controllers\User\HasilTesUserController;
+use App\Http\Controllers\User\UserProfileController;
 use App\Http\Controllers\ViewUserController;
 use App\Http\Controllers\TestComponentController;
 use App\Http\Controllers\AthleteController;
@@ -98,4 +100,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:user'])->group(function () {
     // Route::get('/user', [ViewUserController::class,'index'])->name('user.index');
     Route::get('/user',[DashboardUserController::class,'index'])->name('dashboarduser');
+    Route::get('/user/hasil-tes',[HasilTesUserController::class,'index'])->name('user.hasiltes');
+    Route::post('/user/update-photo',[UserProfileController::class,'updatePhoto'])->name('user.updatePhoto');
 });
