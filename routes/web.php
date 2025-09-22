@@ -1,10 +1,14 @@
 <?php
 
 
+use App\Http\Controllers\AnnualPlanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\MicrocycleController;
 use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestResultController;
 use App\Http\Controllers\User\DashboardUserController;
@@ -90,6 +94,26 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/pengguna', [PenggunaController::class, 'index'])->name('admin.pengguna');
     Route::put('/users/{id}/role', [PenggunaController::class, 'updateRole'])->name('admin.users.updateRole');
     Route::put('/athletes/{id}/user', [PenggunaController::class, 'updateUser'])->name('admin.athletes.updateUser');
+
+    // Plans
+    Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+    Route::get('/plans/create', [PlanController::class, 'create'])->name('plans.create');
+    Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
+    Route::get('/plans/{plan}', [PlanController::class, 'show'])->name('plans.show');
+
+    // Microcycles
+    Route::get('/microcycles/create', [MicrocycleController::class, 'create'])->name('microcycles.create');
+    Route::post('/microcycles', [MicrocycleController::class, 'store'])->name('microcycles.store');
+
+    Route::get('/annual-plan', [AnnualPlanController::class, 'index'])->name('annual-plan.index');
+
+    //events
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+
+
 });
 
 });

@@ -31,7 +31,7 @@
   </div>
 
   <footer class="main-footer text-center">
-    <small>&copy; {{ date('Y') }} - Sistem Gudang</small>
+    <small>&copy; {{ date('Y') }} - Taekwondo</small>
   </footer>
 
 </div>

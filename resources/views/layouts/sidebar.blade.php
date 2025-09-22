@@ -2,23 +2,23 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
   <a href="/" class="brand-link">
-    <span class="brand-text font-weight-light ml-2">Laravel</span>
+    <span class="brand-text font-weight-light ml-2">Aplikasi Taekwondo</span>
   </a>
 
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-  <div class="image">
-    
-<img 
-    src="{{ Auth::check() && Auth::user()->profile_photo_url 
-            ? asset('storage/' . Auth::user()->profile_photo_url) 
-            : asset('adminlte/dist/img/user2-160x160.jpg') }}" 
-    class="img-circle elevation-2" 
-    alt="User Image" 
-    style="width:40px;height:40px;object-fit:cover;">
-  </div>
+      <div class="image">
+        
+        <img 
+            src="{{ Auth::check() && Auth::user()->profile_photo_url 
+                    ? asset('storage/' . Auth::user()->profile_photo_url) 
+                    : asset('adminlte/dist/img/user2-160x160.jpg') }}" 
+            class="img-circle elevation-2" 
+            alt="User Image" 
+            style="width:40px;height:40px;object-fit:cover;">
+      </div>
   <div class="info">
     <a href="{{ route('profile') }}" class="d-block">{{ Auth::user()->name ?? 'Guest' }}</a>
   </div>
@@ -63,6 +63,13 @@
           </a>
         </li>
 
+        {{-- <li class="nav-item">
+          <a href="{{route('annual-plan.index')}}" class="nav-link">
+              <i class="nav-icon fas fa-calendar-alt"></i>
+              <p> Annual Plan</p>
+          </a>
+        </li> --}}
+
         <!-- Annual Plan Dropdown -->
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
@@ -73,16 +80,16 @@
               </p>
           </a>
           <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{{route('annual-plan.index')}}" class="nav-link">
+                    <i class="fas fa-calendar-week nav-icon"></i>
+                    <p>Lihat Annual Plan</p>
+                </a>
+            </li>
               <li class="nav-item">
-                  <a href="#" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Lihat Annual Plan</p>
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="#" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Kelola Annual Plan</p>
+                  <a href="{{route('events.index')}}" class="nav-link">
+                      <i class="fas fa-project-diagram nav-icon"></i>
+                      <p>Kelola Event</p>
                   </a>
               </li>
           </ul>

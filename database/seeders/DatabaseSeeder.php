@@ -25,5 +25,9 @@ class DatabaseSeeder extends Seeder
             AthleteSeeder::class,
             TestComponentSeeder::class,
         ]);
+
+        $this->call([
+            AnnualPlanSeeder::class,
+        ]);
     }
 }
