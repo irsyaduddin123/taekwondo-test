@@ -96,15 +96,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/athletes/{id}/user', [PenggunaController::class, 'updateUser'])->name('admin.athletes.updateUser');
 
     // Plans
-    Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
-    Route::get('/plans/create', [PlanController::class, 'create'])->name('plans.create');
-    Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
-    Route::get('/plans/{plan}', [PlanController::class, 'show'])->name('plans.show');
+    Route::post('/plans', [MicrocycleController::class, 'storePlan'])->name('plans.store');
+    Route::delete('/plans/{id}', [MicrocycleController::class, 'destroyPlan'])->name('plans.destroy');
+    Route::put('/plans/{id}', [MicrocycleController::class, 'updatePlan'])->name('plans.update');
 
     // Microcycles
     Route::get('/microcycles/create', [MicrocycleController::class, 'create'])->name('microcycles.create');
-    Route::post('/microcycles', [MicrocycleController::class, 'store'])->name('microcycles.store');
+    Route::get('/microcycles', [MicrocycleController::class, 'index'])->name('microcycles.index');
+    Route::delete('/microcycles/{id}', [MicrocycleController::class, 'destroyMicrocycle'])->name('microcycles.destroy');
+    Route::post('/plans/{planId}/microcycles', [MicrocycleController::class, 'storeMicrocycle'])->name('microcycles.store');
+    Route::put('/microcycles/{id}', [MicrocycleController::class, 'updateMicrocycle'])->name('microcycles.update');
 
+    //Annual Plan
     Route::get('/annual-plan', [AnnualPlanController::class, 'index'])->name('annual-plan.index');
 
     //events
@@ -113,6 +116,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
 
+
+
+
+
+
+
+    
 
 });
 

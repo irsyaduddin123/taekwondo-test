@@ -82,7 +82,7 @@
     </table>
 
     {{-- Bagian Keterampilan Fisik --}}
-    <h4 class="mt-4">Komponen Keterampilan Fisik</h4>
+    <h4 class="mt-4">Komponen Keterampilan Teknik</h4>
     <table class="table table-striped">
         <thead>
             <tr>

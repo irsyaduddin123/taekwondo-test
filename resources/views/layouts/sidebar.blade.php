@@ -92,6 +92,12 @@
                       <p>Kelola Event</p>
                   </a>
               </li>
+              <li class="nav-item">
+                  <a href="{{route('microcycles.index')}}" class="nav-link">
+                      <i class="fas fa-project-diagram nav-icon"></i>
+                      <p>Kelola Grafik</p>
+                  </a>
+              </li>
           </ul>
         </li>
 

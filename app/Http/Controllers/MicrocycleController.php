@@ -8,69 +8,105 @@ use Illuminate\Http\Request;
 
 class MicrocycleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $plans = Plan::with('microcycles')->get();
+        return view('admin.anual-plan.microcycles.index', compact('plans'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Store Plan
+    public function storePlan(Request $request)
     {
-        //
-        $plans = Plan::all();
-        return view('admin.anual-plan.microcycles.create', compact('plans'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
         $request->validate([
-            'plan_id' => 'required|exists:plans,id',
-            'week' => 'required|integer'
+            'nama'  => 'required|string|max:255',
+            'tahun' => 'required|integer',
         ]);
 
-        Microcycle::create($request->all());
-        return redirect()->route('plans.show', $request->plan_id)->with('success', 'Microcycle created successfully.');
-            
+        Plan::create($request->only(['nama', 'tahun']));
+        return back()->with('success', 'Plan berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Store Microcycle
+// Store Microcycle
+    public function storeMicrocycle(Request $request, $planId)
     {
-        //
+        $request->validate([
+            'minggu'     => 'required|integer',
+            'fase'       => 'required|string|max:255',
+            'tahap'      => 'required|string|max:255',
+            'load'       => 'required|integer',
+            'phys_prep'  => 'required|integer',
+            'tech_prep'  => 'required|integer',
+            'volume'     => 'required|integer',
+            'intensity'  => 'required|integer',
+        ]);
+
+        Microcycle::create([
+            'plan_id'   => $planId,
+            'minggu'    => $request->minggu,
+            'fase'      => $request->fase,
+            'tahap'     => $request->tahap,
+            'load'      => $request->load,
+            'phys_prep' => $request->phys_prep,
+            'tech_prep' => $request->tech_prep,
+            'volume'    => $request->volume,
+            'intensity' => $request->intensity,
+        ]);
+
+        return back()->with('success', 'Microcycle berhasil ditambahkan.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+
+    // Update Plan
+    public function updatePlan(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama'  => 'required|string|max:255',
+            'tahun' => 'required|integer',
+        ]);
+
+        $plan = Plan::findOrFail($id);
+        $plan->update($request->only(['nama', 'tahun']));
+
+        return back()->with('success', 'Plan berhasil diperbarui.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Update Microcycle
+    public function updateMicrocycle(Request $request, $id)
     {
-        //
+        $request->validate([
+            'minggu'     => 'required|integer',
+            'fase'       => 'required|string|max:255',
+            'tahap'      => 'required|string|max:255',
+            'load'       => 'required|integer',
+            'phys_prep'  => 'required|integer',
+            'tech_prep'  => 'required|integer',
+            'volume'     => 'required|integer',
+            'intensity'  => 'required|integer',
+        ]);
+
+        $mc = Microcycle::findOrFail($id);
+        $mc->update($request->only([
+            'minggu', 'fase', 'tahap', 'load',
+            'phys_prep', 'tech_prep', 'volume', 'intensity'
+        ]));
+
+        return back()->with('success', 'Microcycle berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+
+    // Hapus Plan
+    public function destroyPlan($id)
     {
-        //
+        Plan::findOrFail($id)->delete();
+        return back()->with('success', 'Plan berhasil dihapus.');
+    }
+
+    // Hapus Microcycle
+    public function destroyMicrocycle($id)
+    {
+        Microcycle::findOrFail($id)->delete();
+        return back()->with('success', 'Microcycle berhasil dihapus.');
     }
 }
