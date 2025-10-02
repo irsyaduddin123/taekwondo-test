@@ -71,7 +71,7 @@
         </li>
         <li class="nav-item mb-2">
             <a href="{{ route('user.prestasi.index')}}" class="btn w-100 btn-outline-light">
-                Edit Profile
+                Prestasi Saya
             </a>
         </li>
 

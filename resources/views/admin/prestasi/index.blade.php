@@ -3,63 +3,76 @@
 @section('page_title', 'Hasil Prestasi Semua Athlete')
 
 @section('content')
-<div class="container">
-    <h2 class="mb-4">Hasil Prestasi Semua Athlete</h2>
+<div class="container py-4">
+    <h2 class="mb-4 text-center text-primary fw-bold">Hasil Prestasi Semua Athlete</h2>
 
     <div id="accordion">
         @forelse($athletes as $athlete)
-            <div class="card shadow mb-3">
-                <div class="card-header bg-primary text-white" id="heading{{ $athlete->id }}">
+            <div class="card shadow-sm mb-4 rounded">
+                <!-- Header Accordion -->
+                <div class="card-header d-flex justify-content-between align-items-center" id="heading{{ $athlete->id }}" style="background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); color:white;">
                     <h5 class="mb-0">
-                        <button class="btn btn-link text-white" data-toggle="collapse" data-target="#collapse{{ $athlete->id }}" aria-expanded="false" aria-controls="collapse{{ $athlete->id }}">
+                        <button class="btn btn-link text-white fw-bold" data-toggle="collapse" data-target="#collapse{{ $athlete->id }}" aria-expanded="false" aria-controls="collapse{{ $athlete->id }}">
                             {{ $athlete->name }}
                         </button>
                     </h5>
+                    <div>
+                        <a href="{{ route('hasil-prestasi.showAthlete', $athlete->id) }}" class="btn btn-light btn-sm me-2">
+                            <i class="fas fa-eye me-1"></i> Lihat Prestasi
+                        </a>
+                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#tambahPrestasi{{ $athlete->id }}">
+                            <i class="fas fa-plus me-1"></i> Tambah Prestasi
+                        </button>
+                    </div>
                 </div>
 
+                <!-- Body Accordion -->
                 <div id="collapse{{ $athlete->id }}" class="collapse" aria-labelledby="heading{{ $athlete->id }}" data-parent="#accordion">
                     <div class="card-body">
-                        <!-- Tombol Tambah Prestasi -->
-                        <button class="btn btn-success mb-3" data-toggle="modal" data-target="#tambahPrestasi{{ $athlete->id }}">
-                            + Tambah Prestasi
-                        </button>
-
-                        <!-- Tabel Prestasi -->
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Kejuaraan</th>
-                                    <th>Kelas</th>
-                                    <th>Hasil</th>
-                                    <th>Evaluasi Pelatih</th>
-                                    <th>Evaluasi Pribadi</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($athlete->hasilPrestasis as $prestasi)
+                        <div class="table-responsive">
+                            <table class="table align-middle" style="border-radius:10px; overflow:hidden;">
+                                <thead style="background-color:#f0f8ff;">
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $prestasi->nama_kejuaraan }}</td>
-                                        <td>{{ $prestasi->kelas_pertandingan }}</td>
-                                        <td>{{ $prestasi->hasil_pertandingan }}</td>
-                                        <td>{{ $prestasi->evaluasi_pelatih }}</td>
-                                        <td>{{ $prestasi->evaluasi_pribadi ?? '-' }}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editPrestasi{{ $prestasi->id }}">
-                                                Edit
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#hapusPrestasi{{ $prestasi->id }}">
-                                                Hapus
-                                            </button>
-                                        </td>
+                                        <th>No</th>
+                                        <th>Nama Kejuaraan</th>
+                                        <th>Kelas</th>
+                                        <th>Hasil</th>
+                                        <th>Evaluasi Pelatih</th>
+                                        <th>Evaluasi Pribadi</th>
+                                        <th>Aksi</th>
                                     </tr>
-                                @empty
-                                    <tr><td colspan="7" class="text-center">Belum ada prestasi</td></tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @forelse($athlete->hasilPrestasis as $prestasi)
+                                        <tr style="background-color: {{ $loop->even ? '#f9f9f9' : '#ffffff' }};">
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $prestasi->nama_kejuaraan }}</td>
+                                            <td>{{ $prestasi->kelas_pertandingan }}</td>
+                                            <td>
+                                                <span class="badge px-2 py-1 
+                                                    @if(strtolower($prestasi->hasil_pertandingan) == 'menang') bg-success
+                                                    @elseif(strtolower($prestasi->hasil_pertandingan) == 'seri') bg-warning text-dark
+                                                    @else bg-danger @endif">
+                                                    {{ $prestasi->hasil_pertandingan }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $prestasi->evaluasi_pelatih }}</td>
+                                            <td>{{ $prestasi->evaluasi_pribadi ?? '-' }}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-warning mb-1" data-toggle="modal" data-target="#editPrestasi{{ $prestasi->id }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger mb-1" data-toggle="modal" data-target="#hapusPrestasi{{ $prestasi->id }}">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="7" class="text-center text-muted">Belum ada prestasi</td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

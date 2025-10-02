@@ -68,4 +68,12 @@ class HasilPrestasiController extends Controller
             ->route('hasil-prestasi.index')
             ->with('success', 'Hasil prestasi berhasil dihapus');
     }
+
+    public function showAthlete($id)
+    {
+        // Cari 1 athlete beserta prestasinya
+        $athlete = Athlete::with('hasilPrestasis')->findOrFail($id);
+
+        return view('admin.prestasi.show', compact('athlete'));
+    }
 }

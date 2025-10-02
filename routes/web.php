@@ -127,6 +127,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
             Route::get('/{prestasi}/edit', [HasilPrestasiController::class, 'edit'])->name('hasil-prestasi.edit');
             Route::put('/{prestasi}', [HasilPrestasiController::class, 'update'])->name('hasil-prestasi.update');
             Route::delete('/{prestasi}', [HasilPrestasiController::class, 'destroy'])->name('hasil-prestasi.destroy');
+            
+            Route::get('/athlete/{id}', [HasilPrestasiController::class, 'showAthlete'])
+        ->name('hasil-prestasi.showAthlete');
         });
 
 
