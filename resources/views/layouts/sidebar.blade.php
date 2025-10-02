@@ -35,12 +35,30 @@
           </a>
         </li>
 
-        <li class="nav-item">
-          <a href="{{ route('athletes.index') }}" class="nav-link">
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
             <i class="nav-icon fas fa-medal"></i>
-            <p>Athlete</p>
+            <p>
+              Athlete
+              <i class="right fas fa-angle-left"></i>
+            </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('athletes.index') }}" class="nav-link">
+                <i class="fas fa-running nav-icon"></i>
+                <p>Daftar Athlete</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('hasil-prestasi.index') }}" class="nav-link">
+                <i class="fas fa-trophy nav-icon"></i>
+                <p>Prestasi Athlete</p>
+              </a>
+            </li>
+          </ul>
         </li>
+
 
         <li class="nav-item">
           <a href="{{ route('test_components.index') }}" class="nav-link">
@@ -88,7 +106,7 @@
             </li>
               <li class="nav-item">
                   <a href="{{route('events.index')}}" class="nav-link">
-                      <i class="fas fa-project-diagram nav-icon"></i>
+                      <i class="fas fa-calendar-check nav-icon"></i>
                       <p>Kelola Event</p>
                   </a>
               </li>

@@ -70,7 +70,7 @@
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a href="#" class="btn w-100 btn-outline-light">
+            <a href="{{ route('user.prestasi.index')}}" class="btn w-100 btn-outline-light">
                 Edit Profile
             </a>
         </li>
