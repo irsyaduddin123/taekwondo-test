@@ -8,30 +8,28 @@
 
     <div id="accordion">
         @forelse($athletes as $athlete)
-            <div class="card shadow-sm mb-4 rounded">
+            <div class="card mb-4 shadow-sm rounded">
                 <!-- Header Accordion -->
-                <div class="card-header d-flex justify-content-between align-items-center" id="heading{{ $athlete->id }}" style="background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); color:white;">
+                <div class="card-header d-flex justify-content-between align-items-center" id="heading{{ $athlete->id }}" style="background: linear-gradient(90deg, #00c6ff, #0072ff); color:white; cursor:pointer;" onclick="toggleCollapse('{{ $athlete->id }}')">
                     <h5 class="mb-0">
-                        <button class="btn btn-link text-white fw-bold" data-toggle="collapse" data-target="#collapse{{ $athlete->id }}" aria-expanded="false" aria-controls="collapse{{ $athlete->id }}">
-                            {{ $athlete->name }}
-                        </button>
+                        <span class="fw-bold">{{ $athlete->name }}</span>
                     </h5>
                     <div>
-                        <a href="{{ route('hasil-prestasi.showAthlete', $athlete->id) }}" class="btn btn-light btn-sm me-2">
+                        <a href="{{ route('hasil-prestasi.showAthlete', $athlete->id) }}" class="btn btn-light btn-sm me-2" style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                             <i class="fas fa-eye me-1"></i> Lihat Prestasi
                         </a>
-                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#tambahPrestasi{{ $athlete->id }}">
+                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#tambahPrestasi{{ $athlete->id }}" style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                             <i class="fas fa-plus me-1"></i> Tambah Prestasi
                         </button>
                     </div>
                 </div>
 
                 <!-- Body Accordion -->
-                <div id="collapse{{ $athlete->id }}" class="collapse" aria-labelledby="heading{{ $athlete->id }}" data-parent="#accordion">
+                <div id="collapse{{ $athlete->id }}" class="collapse">
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table align-middle" style="border-radius:10px; overflow:hidden;">
-                                <thead style="background-color:#f0f8ff;">
+                                <thead style="background-color:#e0f7fa;">
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Kejuaraan</th>
@@ -44,12 +42,12 @@
                                 </thead>
                                 <tbody>
                                     @forelse($athlete->hasilPrestasis as $prestasi)
-                                        <tr style="background-color: {{ $loop->even ? '#f9f9f9' : '#ffffff' }};">
+                                        <tr style="background-color: {{ $loop->even ? '#f1f8e9' : '#ffffff' }}; transition: background 0.3s;" onmouseover="this.style.background='#dcedc8'" onmouseout="this.style.background='{{ $loop->even ? '#f1f8e9' : '#ffffff' }}'">
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $prestasi->nama_kejuaraan }}</td>
                                             <td>{{ $prestasi->kelas_pertandingan }}</td>
                                             <td>
-                                                <span class="badge px-2 py-1 
+                                                <span class="badge rounded-pill px-2 py-1 shadow-sm 
                                                     @if(strtolower($prestasi->hasil_pertandingan) == 'menang') bg-success
                                                     @elseif(strtolower($prestasi->hasil_pertandingan) == 'seri') bg-warning text-dark
                                                     @else bg-danger @endif">
@@ -76,7 +74,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- ================== MODALS ================== -->
 
             <!-- Modal Tambah Prestasi -->
@@ -195,4 +192,14 @@
         @endforelse
     </div>
 </div>
+<script>
+function toggleCollapse(id) {
+    let element = document.getElementById('collapse'+id);
+    if(element.classList.contains('show')){
+        $(element).collapse('hide');
+    } else {
+        $(element).collapse('show');
+    }
+}
+</script>
 @endsection
