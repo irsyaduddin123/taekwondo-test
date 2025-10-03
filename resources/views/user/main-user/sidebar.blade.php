@@ -1,8 +1,17 @@
 <div class="col-md-3 sidebar-custom p-3">
     <div class="text-center">
+
+        <!-- Tombol kembali -->
+        <div class="text-start mb-3">
+            <a href="{{ url('/') }}" class="btn btn-outline-light w-100">
+                <i class="fas fa-arrow-left me-2"></i> Kembali ke Home
+            </a>
+        </div>
+
+        <!-- Foto profil -->
         <div class="position-relative d-inline-block">
             <img id="profile-photo" 
-                class="profile-user-img img-fluid rounded-circle mb-3" width="150" height="150"
+                class="profile-user-img img-fluid rounded-circle mb-3"
                 src="{{ Auth::check() && Auth::user()->profile_photo_url 
                         ? asset('storage/' . Auth::user()->profile_photo_url) 
                         : asset('adminlte/dist/img/user2-160x160.jpg') }}"
@@ -16,46 +25,14 @@
                     data-bs-toggle="modal" data-bs-target="#editPhotoModal">
                 <i class="fas fa-pencil-alt"></i>
             </button>
-            <div class="modal fade" id="editPhotoModal" tabindex="-1" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-dark text-white">
-                    <div class="modal-header border-0">
-                        <h5 class="modal-title" id="editPhotoModalLabel">Ganti Foto Profil</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3 text-center">
-                            <img id="preview-photo" 
-                                src="{{ Auth::check() && Auth::user()->profile_photo_url 
-                                        ? asset('storage/' . Auth::user()->profile_photo_url) 
-                                        : asset('adminlte/dist/img/user2-160x160.jpg') }}" 
-                                alt="Preview Foto" 
-                                class="img-fluid img-circle mb-3" 
-                                style="width:150px;height:150px;object-fit:cover;">
-                        </div>
-
-                        <form id="updatePhotoForm" action="{{ route('user.updatePhoto') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="profilePhoto" class="form-label">Pilih Foto Baru</label>
-                                <input class="form-control" type="file" id="profilePhoto" name="photo" accept="image/*" required>
-                                <small class="text-warning d-none" id="fileSizeError">⚠️ Ukuran file maksimal 2 MB!</small>
-                            </div>
-                            <div class="text-end">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
-                        </form>
-                    </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
+        <!-- Nama & email -->
         <h4 class="mt-2 text-white">{{ Auth::user()->name }}</h4>
         <p class="text-light">{{ Auth::user()->email }}</p>
     </div>
 
+    <!-- Sidebar Menu -->
     <ul class="nav flex-column mt-3">
         <li class="nav-item mb-2">
             <a href="{{ route('dashboarduser') }}" 
@@ -70,19 +47,22 @@
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a href="{{ route('user.prestasi.index')}}" class="btn w-100 btn-outline-light">
+            <a href="{{ route('user.prestasi.index')}}" 
+               class="btn w-100 {{ Route::is('user.prestasi.index') ? 'btn-light text-primary' : 'btn-outline-light' }}">
                 Prestasi Saya
             </a>
         </li>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-outline-danger w-100">
-                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-            </button>
-        </form>
+        <li class="nav-item">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn btn-outline-danger w-100">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </form>
+        </li>
     </ul>
 </div>
+
 
 <script>
 document.getElementById('profilePhoto').addEventListener('change', function(event) {

@@ -7,12 +7,12 @@
     <h3 class="mb-4">📊 Hasil Tes Saya</h3>
 
     {{-- FILTER --}}
-    <form method="GET" action="{{ route('user.hasiltes') }}" class="row g-3 align-items-end mb-4">
+    <form method="GET" action="{{ route('user.hasiltes') }}" class="row g-3 align-items-end mb-4 bg-light p-3 rounded shadow-sm">
         <div class="col-md-3">
             <label for="bulan" class="form-label">Bulan</label>
             <select name="bulan" id="bulan" class="form-select">
-                <option value="">--semua bulan--</option>
-                @for ($m =1; $m <= 12; $m++)
+                <option value="">-- Semua Bulan --</option>
+                @for ($m = 1; $m <= 12; $m++)
                     <option value="{{ $m }}" {{ request('bulan') == $m ? 'selected' : '' }}>
                         {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
                     </option>
@@ -33,8 +33,12 @@
         </div>
 
         <div class="col-md-3 d-flex">
-            <button type="submit" class="btn btn-primary me-2">FILTER</button>
-            <a href="{{route('user.hasiltes')}}" class="btn btn-secondary me-2">RESET</a>
+            <button type="submit" class="btn btn-primary me-2">
+                <i class="fas fa-filter me-1"></i> Filter
+            </button>
+            <a href="{{ route('user.hasiltes') }}" class="btn btn-secondary">
+                <i class="fas fa-undo me-1"></i> Reset
+            </a>
         </div>
     </form>
 
@@ -45,29 +49,60 @@
     @else
         @foreach($groupedResults as $type => $typeResults)
             <div class="mb-5">
-                <h4 class="mb-3">{{ ucfirst($type) }}</h4>
-                <table class="table table-bordered table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Komponen Tes</th>
-                            <th>Nilai</th>
-                            <th>Tanggal Tes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($typeResults as $index => $result)
+                <h4 class="mb-3">
+                    @if(strtolower($type) == 'fisik')
+                        🏃‍♂️
+                    @elseif(strtolower($type) == 'teknik')
+                        🥋
+                    @else
+                        📌
+                    @endif
+                    {{ strtoupper($type) }}
+                </h4>
+                <div class="table-responsive shadow-sm rounded">
+                    <table class="table align-middle text-center">
+                        <thead style="background: linear-gradient(90deg, #4f46e5, #3b82f6); color: white;">
                             <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $result->component_name }}</td>
-                                <td>{{ $result->score }}</td>
-                                <td>{{ \Carbon\Carbon::parse($result->test_date)->format('d M Y') }}</td>
+                                <th>#</th>
+                                <th>Komponen Tes</th>
+                                <th>Nilai</th>
+                                <th>Tanggal Tes</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            @foreach($typeResults as $index => $result)
+                                <tr class="hover-row">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td class="text-start">{{ $result->component_name }}</td>
+                                    <td>
+                                        @php
+                                            $score = $result->score;
+                                            $badgeClass = $score >= 80 ? 'success' : ($score >= 60 ? 'warning' : 'danger');
+                                        @endphp
+                                        <span class="badge bg-{{ $badgeClass }} px-3 py-2">{{ $score }}</span>
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($result->test_date)->format('d M Y') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         @endforeach
     @endif
 </div>
+
+{{-- Custom Style --}}
+<style>
+    /* Efek hover pada row */
+    .hover-row:hover {
+        background-color: #f3f4f6 !important; /* abu-abu lembut */
+        transition: 0.2s;
+    }
+    /* Supaya tabel lebih clean */
+    table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+</style>
 @endsection
