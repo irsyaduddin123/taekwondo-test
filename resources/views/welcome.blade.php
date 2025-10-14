@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - Aplikasi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="bg-gradient-to-br from-indigo-500 to-blue-600 min-h-screen flex flex-col">
@@ -104,8 +103,49 @@
         </div>
     </section>
 
+    <!-- Galeri Foto -->
+<section class="bg-white py-16 px-6 text-center">
+    <h2 class="text-3xl font-bold mb-8 text-indigo-600">Galeri Foto</h2>
+    <p class="max-w-2xl mx-auto mb-12 text-gray-600">
+        Momen terbaik latihan, kompetisi, dan kegiatan komunitas Taekwondo Scorpion.
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <!-- Foto 1 -->
+        <div class="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
+            <img src="{{ asset('images/logo-background.png') }}" 
+                 alt="Latihan Taekwondo 1" 
+                 class="w-full h-56 object-cover">
+        </div>
+
+        <!-- Foto 2 -->
+        <div class="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
+            <img src="{{ asset('images/taekwondo.png') }}" 
+                 alt="Latihan Taekwondo 2" 
+                 class="w-full h-56 object-cover">
+        </div>
+
+        <!-- Foto 3 -->
+        <div class="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
+            <img src="{{ asset('images/galeri/kompetisi1.jpg') }}" 
+                 alt="Kompetisi Taekwondo" 
+                 class="w-full h-56 object-cover">
+        </div>
+
+        <!-- Foto 4 -->
+        <div class="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
+            <img src="{{ asset('images/galeri/tim1.jpg') }}" 
+                 alt="Tim Taekwondo Scorpion" 
+                 class="w-full h-56 object-cover">
+        </div>
+
+        <!-- Tambahkan lebih banyak foto sesuai kebutuhan -->
+    </div>
+</section>
+
+
 @php
-    $waNumber = '6281228132856'; // nomor WA (tanpa +)
+    $waNumber = '6281228132856';
     $waMessage = urlencode('Halo, saya ingin bertanya tentang Taekwondo Scorpion.');
 @endphp
 

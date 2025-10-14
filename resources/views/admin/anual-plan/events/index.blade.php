@@ -39,6 +39,7 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Plan</th>
+                    <th>Tahun</th>
                     <th>Nama Event</th>
                     <th>Lokasi</th>
                     <th>Tanggal Mulai</th>
@@ -52,6 +53,7 @@
                 <tr>
                     <td>{{ $i+1 }}</td>
                     <td>{{$event->plan->nama}}</td>
+                    <td>{{$event->plan->tahun}}</td>
                     <td>{{ $event->nama }}</td>
                     <td>{{ $event->lokasi }}</td>
                     <td>{{ $event->tanggal_mulai }}</td>
@@ -85,7 +87,7 @@
                           @method('PUT') <!-- 🔑 supaya update jalan -->
                           <div class="form-group">
                             <label>Nama Plan</label>
-                            <input type="text" class="form-control" name="nama" value="{{ $event->plan->nama }}" required readonly>
+                            <input type="text" class="form-control" name="nama" value="{{ $event->plan->nama }} tahun {{$event->plan->tahun}} " required readonly>
                           </div>
                           <div class="form-group">
                             <label>Nama Event</label>
@@ -166,7 +168,7 @@
             <select name="plan_id" class="form-control" required>
                 <option value="" disabled selected>Pilih Plan</option>
                 @foreach($plans as $plan)
-                    <option value="{{ $plan->id }}">{{ $plan->nama }} </option>
+                    <option value="{{ $plan->id }}">{{ $plan->nama }} tahun {{ $plan->tahun }}</option>
                 @endforeach
             </select>
             </div>
