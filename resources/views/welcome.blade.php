@@ -28,6 +28,11 @@
                     class="bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
                     Dashboard Admin
                     </a>
+                @elseif(Auth::user()->role === 'coach')
+                    <a href="{{ route('dashboard') }}" 
+                    class="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
+                    Dashboard Coach
+                    </a>
                 @else
                     <a href="{{ route('dashboarduser') }}" 
                     class="bg-gradient-to-r from-green-500 to-blue-600 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
@@ -63,13 +68,13 @@
 
     <!-- Hero Section -->
     <main class="flex-grow flex flex-col items-center justify-center text-center text-white px-6 py-20">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 
-                   bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-600 bg-clip-text text-transparent">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4  
+                   bg-gradient-to-r from-yellow-500 via-pink-200 to-purple-500 bg-clip-text text-transparent">
             Selamat Datang di Aplikasi
         </h1>
-        <p class="text-lg md:text-xl max-w-xl">
+        {{-- <p class="text-lg md:text-xl max-w-xl">
             Taekwondo scorpion✨
-        </p>
+        </p> --}}
     </main>
 
     <!-- Tentang Kami -->

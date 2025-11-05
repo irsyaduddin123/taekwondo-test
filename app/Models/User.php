@@ -61,6 +61,11 @@ class User extends Authenticatable
             ->implode('');
     }
 
+    public function isAdmin()
+{
+    return $this->role === 'admin';
+}
+
         /**
      * Accessor untuk profile photo url
      */

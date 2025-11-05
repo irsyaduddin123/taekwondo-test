@@ -33,7 +33,7 @@
                                 @method('PUT')
                                 <select name="role" class="form-control me-2">
                                     <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
-                                    {{-- <option value="athlete" {{ $user->role == 'athlete' ? 'selected' : '' }}>Athlete</option> --}}
+                                    <option value="coach" {{ $user->role == 'coach' ? 'selected' : '' }}>Coach</option>
                                     <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-success">Simpan</button>

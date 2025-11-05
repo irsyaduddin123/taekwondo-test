@@ -21,7 +21,7 @@ class PenggunaController extends Controller
     public function updateRole(Request $request, $id)
     {
         $request->validate([
-            'role' => 'required|string|in:user,athlete,admin',
+            'role' => 'required|string|in:user,coach,admin',
         ]);
 
         $user = User::findOrFail($id);

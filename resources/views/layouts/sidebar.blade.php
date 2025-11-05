@@ -78,13 +78,7 @@
           </a>
         </li>
 
-        <!-- Pengguna -->
-        <li class="nav-item">
-          <a href="{{ route('admin.pengguna') }}" class="nav-link" style="transition:0.3s;">
-            <i class="nav-icon fas fa-users"></i>
-            <p>Pengguna</p>
-          </a>
-        </li>
+
 
         <!-- Annual Plan -->
         <li class="nav-item has-treeview">
@@ -116,6 +110,22 @@
             </li>
           </ul>
         </li>
+        @if(Auth::user()->isAdmin())
+            <!-- menu admin -->
+                    <!-- Pengguna -->
+          <li class="nav-item">
+            <a href="{{ route('admin.pengguna') }}" class="nav-link" style="transition:0.3s;">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Pengguna</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('admin.pengguna') }}" class="nav-link" style="transition:0.3s;">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Pengguna</p>
+            </a>
+          </li>
+        @endif
 
       </ul>
     </nav>
