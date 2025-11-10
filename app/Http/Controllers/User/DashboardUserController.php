@@ -15,6 +15,16 @@ class DashboardUserController extends Controller
     public function index(Request $request)
     {
         $athlete = Auth::user()->athlete;
+
+        // Cek apakah user ulang tahun hari ini
+        $ultahUserHariIni = false;
+
+        if ($athlete && $athlete->birthdate) {
+            $today = now()->format('m-d');
+            $tanggalLahir = Carbon::parse($athlete->birthdate)->format('m-d');
+            $ultahUserHariIni = ($tanggalLahir === $today);
+        }
+
         if(!$athlete){
             abort(403, 'athlete tidak ditemukan untuk user ini');
         }
@@ -93,6 +103,7 @@ class DashboardUserController extends Controller
             'komponenFisikUser'   => TestComponent::whereHas('type', fn($q) => $q->where('nama_jenis', 'fisik'))->get(),
             'komponenTeknikUser'  => TestComponent::whereHas('type', fn($q) => $q->where('nama_jenis', 'teknik'))->get(),
             'komponenMentalUser'  => TestComponent::whereHas('type', fn($q) => $q->where('nama_jenis', 'mental'))->get(),
+            'ultahUserHariIni'    => $ultahUserHariIni,
         ]);
     }
 }

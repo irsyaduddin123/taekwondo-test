@@ -12,6 +12,10 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $today = now()->format('m-d');
+
+        $ultahHariIni = Athlete::whereRaw("DATE_FORMAT(birthdate, '%m-%d') = ?", [$today])->get();
+
         $athleteId = $request->input('athlete_id');
         $komponenFisikId = $request->input('komponen_fisik_id');
         $komponenTeknikId = $request->input('komponen_teknik_id');
@@ -80,6 +84,7 @@ class DashboardController extends Controller
 
         return view('dashboard', [
             'jumlahAtlet' => Athlete::count(),
+            'ultahHariIni' => $ultahHariIni,
             'tesFisik' => $totfisiktes,
             'tesTeknik' => $tottekniktes,
             'tesMental' => $totmentaltes,

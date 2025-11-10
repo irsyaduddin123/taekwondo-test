@@ -22,13 +22,21 @@ class AthleteController extends Controller
         $request->validate([
             'name' => 'required',
             'gender' => 'required',
-            'age' => 'required',
-            'height' => 'required',
-            'weight' => 'required',
+            'birthdate' => 'required|date',
+            'height' => 'required|numeric',
+            'weight' => 'required|numeric',
         ]);
 
-        Athlete::create($request->all());
-        return redirect()->route('athletes.index')->with('success', 'Data atlet berhasil ditambahkan.');
+        Athlete::create([
+            'name' => $request->name,
+            'gender' => $request->gender,
+            'birthdate' => $request->birthdate,
+            'age' => \Carbon\Carbon::parse($request->birthdate)->age,
+            'height' => $request->height,
+            'weight' => $request->weight,
+        ]);
+
+        return redirect()->route('athletes.index')->with('success', 'Data atlet berhasil ditambahkan');
     }
 
     // public function edit(Athlete $athlete)
@@ -36,18 +44,28 @@ class AthleteController extends Controller
     //     return view('athletes.edit', compact('athlete'));
     // }
 
-    public function update(Request $request, Athlete $athlete)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required',
             'gender' => 'required',
-            'age' => 'required',
-            'height' => 'required',
-            'weight' => 'required',
+            'birthdate' => 'required|date',
+            'height' => 'required|numeric',
+            'weight' => 'required|numeric',
         ]);
 
-        $athlete->update($request->only(['name','gender','age','height','weight']));
-        return redirect()->route('athletes.index')->with('success', 'Data atlet berhasil diperbarui.');
+        $athlete = Athlete::findOrFail($id);
+
+        $athlete->update([
+            'name' => $request->name,
+            'gender' => $request->gender,
+            'birthdate' => $request->birthdate,
+            'age' => \Carbon\Carbon::parse($request->birthdate)->age,
+            'height' => $request->height,
+            'weight' => $request->weight,
+        ]);
+
+        return back()->with('success', 'Data atlet berhasil diperbarui');
     }
 
     public function destroy(Athlete $athlete)

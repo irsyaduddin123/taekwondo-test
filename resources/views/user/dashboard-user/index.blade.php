@@ -3,6 +3,22 @@
 
 @section('content')
 <div class="row">
+
+    @if ($ultahUserHariIni)
+    <div class="col-12 mb-4">
+        <div class="birthday-card shadow-lg animate-pop">
+            <div class="birthday-icon">🎉</div>
+            <div class="birthday-content">
+                <h3>Selamat Ulang Tahun, {{ Auth::user()->name }}! 🎂</h3>
+                <p>
+                    Semoga panjang umur, sehat selalu, dan semakin berprestasi!  
+                    Terus semangat mencapai target latihanmu!
+                </p>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Welcome Card -->
     <div class="col-12 mb-4">
         <div class="card bg-gradient-warning text-black shadow">
@@ -79,10 +95,93 @@
         <canvas id="chartMentalLine" style="height: 300px;"></canvas>
     </div>
 </div>
+
+
+
 @endsection
 
 @push('scripts')
+@if ($ultahUserHariIni)
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // ✅ Confetti besar pertama (celebration burst)
+    confetti({
+        particleCount: 180,
+        spread: 90,
+        startVelocity: 45,
+        gravity: 0.9,
+        ticks: 200,
+        origin: { y: 0.2 }
+    });
+
+    // ✅ Confetti jatuh kecil-kecil (duration 2 detik)
+    let end = Date.now() + 2000;
+
+    (function frame() {
+        confetti({
+            particleCount: 4,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 }
+        });
+        confetti({
+            particleCount: 4,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 }
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    }());
+});
+</script>
+@endif
+
+
+
+</script>
+
+
 <style>
+/* ✅ Birthday Card Keren */
+.birthday-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #FFD93D, #FF9A3D);
+    color: #3b2900;
+}
+
+.birthday-icon {
+    font-size: 4rem;
+    margin-right: 20px;
+    animation: bounce 1.2s infinite ease-in-out;
+}
+
+.birthday-content h3 {
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+@keyframes popin {
+    0% { transform: scale(0.6); opacity: 0; }
+    70% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
+}
+.animate-pop { animation: popin 0.6s ease-out; }
+
+@keyframes bounce {
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(-6px); }
+}
+
+/* Person chart */
 .person-wrapper { width: 60px; margin: 0 8px; position: relative; cursor: pointer; }
 .person-container { position: relative; height: 100px; width: 40px; background-color: #e0e0e0; border: 2px solid #999; border-radius: 20px; overflow: hidden; margin: 0 auto 8px auto; }
 .person-fill { position: absolute; bottom: 0; width: 100%; transition: height 0.4s ease, background-color 0.4s ease; }
@@ -97,12 +196,6 @@ const userDataFisik = @json($dataFisikUser);
 const userDataTeknik = @json($dataTeknikUser);
 const userDataMental = @json($dataMentalUser ?? []);
 const dataPersenFisikUser = @json($dataPersenFisikUser);
-
-// new Chart(document.getElementById('chartPersenFisik'), {
-//     type: 'bar',
-//     data: { labels, datasets: [{ label: 'Presentase Fisik (%)', data: dataPersenFisikUser, backgroundColor: 'rgba(30, 144, 255, 0.7)', borderRadius: 10, borderSkipped: false }] },
-//     options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.raw}%` } }, title: { display: true, text: 'Presentase Fisik per Bulan' } }, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: value => value + '%' } } } }
-// });
 
 
 // Grafik Fisik Gabungan (Bar + Line)

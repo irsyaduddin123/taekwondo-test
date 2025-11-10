@@ -24,9 +24,13 @@
                 </select>
             </div>
             <div class="form-group">
+                <label>Tanggal Lahir</label>
+                <input type="date" name="birthdate" class="form-control" required>
+            </div>
+            {{-- <div class="form-group">
                 <label>Umur</label>
                 <input type="number" name="age" class="form-control" required>
-            </div>
+            </div> --}}
             <div class="form-group">
                 <label>Tinggi (cm)</label>
                 <input type="number" name="height" class="form-control" required>

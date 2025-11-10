@@ -160,3 +160,37 @@ Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::put('/users/{id}/role', [PenggunaController::class, 'updateRole'])->name('admin.users.updateRole');
         Route::put('/athletes/{id}/user', [PenggunaController::class, 'updateUser'])->name('admin.athletes.updateUser');
 });
+
+
+// Email notifikasi ulang tahun atlet
+
+use App\Mail\AthleteBirthdayNotification;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+
+Route::get('/send-athlete-birthday', function () {
+
+    $today = Carbon::now()->format('m-d');
+
+    //Ambil atlet yang ulang tahun hari ini
+    $athletes = \App\Models\Athlete::whereRaw("DATE_FORMAT(birthdate, '%m-%d') = ?", [$today])->get();
+
+    if ($athletes->count() == 0) {
+        return "ℹ️ Tidak ada atlet yang berulang tahun hari ini.";
+    }
+
+    //Ambil semua email pelatih (role = coach)
+    $coachEmails = \App\Models\User::where('role', 'coach')->pluck('email')->toArray();
+
+    if (count($coachEmails) == 0) {
+        return "❌ Tidak ada user dengan role 'coach'.";
+    }
+
+    // Kirim email ke semua pelatih
+    foreach ($coachEmails as $email) {
+        Mail::to($email)->send(new AthleteBirthdayNotification($athletes));
+    }
+
+    return "✅ Notifikasi ulang tahun dikirim ke semua pelatih.";
+});
+

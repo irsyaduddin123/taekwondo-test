@@ -29,6 +29,7 @@
                     <tr>
                         <th>Nama</th>
                         <th>Gender</th>
+                        <th>Tanggal Lahir</th>
                         <th>Umur</th>
                         <th>Tinggi</th>
                         <th>Berat</th>
@@ -40,7 +41,10 @@
                     <tr>
                         <td>{{ $athlete->name }}</td>
                         <td>{{ ucfirst($athlete->gender) }}</td>
-                        <td>{{ $athlete->age }}</td>
+                        <td>
+                            {{ $athlete->birthdate ? \Carbon\Carbon::parse($athlete->birthdate)->format('d-m-Y') : '-' }}
+                        </td>
+                        <td>{{ \Carbon\Carbon::parse($athlete->birthdate)->age }} tahun</td>
                         <td>{{ $athlete->height }} cm</td>
                         <td>{{ $athlete->weight }} kg</td>
                         <td class="text-center">
@@ -49,7 +53,7 @@
                                 data-id="{{ $athlete->id }}"
                                 data-name="{{ $athlete->name }}"
                                 data-gender="{{ $athlete->gender }}"
-                                data-age="{{ $athlete->age }}"
+                                data-birthdate="{{ $athlete->birthdate }}"
                                 data-height="{{ $athlete->height }}"
                                 data-weight="{{ $athlete->weight }}">
                                 <i class="fas fa-edit"></i> Edit
@@ -76,6 +80,7 @@
     <form id="editForm" method="POST">
         @csrf @method('PUT')
         <div class="modal-content">
+
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-edit mr-1"></i> Edit Atlet
@@ -84,13 +89,33 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body">
-                @foreach (['name' => 'Nama', 'age' => 'Umur', 'height' => 'Tinggi', 'weight' => 'Berat'] as $field => $label)
-                    <div class="form-group mb-3">
-                        <label>{{ $label }}</label>
-                        <input type="{{ $field == 'name' ? 'text' : 'number' }}" name="{{ $field }}" id="edit{{ ucfirst($field) }}" class="form-control" required>
-                    </div>
-                @endforeach
+
+                <!-- Nama -->
+                <div class="form-group mb-3">
+                    <label>Nama</label>
+                    <input type="text" name="name" id="editName" class="form-control" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Tanggal Lahir</label>
+                    <input type="date" name="birthdate" id="editBirthdate" class="form-control" required>
+                </div>
+
+                <!-- Tinggi -->
+                <div class="form-group mb-3">
+                    <label>Tinggi (cm)</label>
+                    <input type="number" name="height" id="editHeight" class="form-control" required>
+                </div>
+
+                <!-- Berat -->
+                <div class="form-group mb-3">
+                    <label>Berat (kg)</label>
+                    <input type="number" name="weight" id="editWeight" class="form-control" required>
+                </div>
+
+                <!-- Gender -->
                 <div class="form-group mb-3">
                     <label>Gender</label>
                     <select name="gender" id="editGender" class="form-control" required>
@@ -98,15 +123,19 @@
                         <option value="perempuan">Perempuan</option>
                     </select>
                 </div>
+
             </div>
+
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Simpan</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
             </div>
+
         </div>
     </form>
   </div>
 </div>
+
 
 <!-- Modal Hapus -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -139,14 +168,18 @@ $(document).ready(function() {
     // Buka modal Edit dan isi data
     $('.btn-edit').click(function() {
         const id = $(this).data('id');
+
         $('#editForm').attr('action', '/athletes/' + id);
+
         $('#editName').val($(this).data('name'));
         $('#editGender').val($(this).data('gender'));
-        $('#editAge').val($(this).data('age'));
+        $('#editBirthdate').val($(this).data('birthdate'));
         $('#editHeight').val($(this).data('height'));
         $('#editWeight').val($(this).data('weight'));
+
         $('#editModal').modal('show');
     });
+
 
     // Buka modal Hapus dan isi data
     $('.btn-delete').click(function() {

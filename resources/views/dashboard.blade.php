@@ -12,6 +12,29 @@
 
 @section('content')
 <div class="row">
+    @if ($ultahHariIni->count() > 0)
+    <div class="col-12 mb-3">
+        <div class="coach-bday-card shadow-lg animate-coach-bday">
+            <div class="coach-bday-left">
+                <div class="coach-bday-icon">🎂</div>
+            </div>
+
+            <div class="coach-bday-right">
+                <h4 class="coach-bday-title">Ulang Tahun Hari Ini!</h4>
+
+                @foreach ($ultahHariIni as $a)
+                    <div class="coach-bday-item">
+                        <strong>{{ $a->name }}</strong>
+                        <span class="coach-bday-age">
+                           Usia {{ \Carbon\Carbon::parse($a->birthdate)->age }} tahun
+                        </span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Welcome Card -->
     <div class="col-12 mb-4">
         <div class="card bg-gradient-warning text-white shadow">
@@ -141,7 +164,70 @@
 @endsection
 
 @push('scripts')
+
+
 <style>
+    /* --- Card Ulang Tahun Pelatih Elegan --- */
+.coach-bday-card {
+    display: flex;
+    padding: 18px 22px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ffe29f, #ffa99f, #ff719a);
+    color: #3a1b1b;
+    background-size: 200% 200%;
+    animation: coachGradient 7s ease infinite;
+    border-left: 6px solid #ff4b91;
+}
+
+@keyframes coachGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.coach-bday-icon {
+    font-size: 3.5rem;
+    margin-right: 18px;
+    animation: coachBounce 1.4s infinite;
+}
+
+@keyframes coachBounce {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-6px); }
+}
+
+.coach-bday-title {
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.coach-bday-item {
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+}
+
+.coach-bday-age {
+    background: #ff4b91;
+    color: white;
+    font-size: 13px;
+    padding: 3px 8px;
+    border-radius: 8px;
+}
+
+.animate-coach-bday {
+    animation: coachPop 0.6s ease-out;
+}
+
+@keyframes coachPop {
+    0% { transform: scale(0.8); opacity: 0; }
+    70% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+
 .person-wrapper { width: 60px; margin: 0 8px; position: relative; cursor: pointer; }
 .person-container { position: relative; height: 100px; width: 40px; background-color: #e0e0e0; border: 2px solid #999; border-radius: 20px; overflow: hidden; margin: 0 auto 8px auto; }
 .person-fill { position: absolute; bottom: 0; width: 100%; transition: height 0.4s ease, background-color 0.4s ease; }
