@@ -119,12 +119,12 @@
               <p>Pengguna</p>
             </a>
           </li>
-          <li class="nav-item">
+          {{-- <li class="nav-item">
             <a href="{{ route('admin.pengguna') }}" class="nav-link" style="transition:0.3s;">
               <i class="nav-icon fas fa-users"></i>
               <p>Pengguna</p>
             </a>
-          </li>
+          </li> --}}
         @endif
 
       </ul>

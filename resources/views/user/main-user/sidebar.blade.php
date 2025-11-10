@@ -63,9 +63,60 @@
     </ul>
 </div>
 
+<!-- Modal Edit Foto -->
+<div class="modal fade" id="editPhotoModal" tabindex="-1" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPhotoModalLabel">Update Foto Profil</h5>
+                <button type="button" class="close" data-bs-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <form id="updatePhotoForm" method="POST" action="{{ route('user.updatePhoto') }}" enctype="multipart/form-data">
+                @csrf
+
+                <div class="modal-body text-center">
+
+                    <!-- Preview foto -->
+                    <img id="preview-photo"
+                         src="{{ Auth::check() && Auth::user()->profile_photo_url 
+                                ? asset('storage/' . Auth::user()->profile_photo_url) 
+                                : asset('adminlte/dist/img/user2-160x160.jpg') }}"
+                         class="rounded-circle mb-3"
+                         style="width:150px; height:150px; object-fit:cover;">
+
+                    <!-- Input file -->
+                    <input type="file" 
+                           class="form-control mt-2" 
+                           id="profile-photo" 
+                           name="profile_photo" 
+                           accept="image/*">
+
+                    <!-- Error ukuran file -->
+                    <small id="fileSizeError" class="text-danger d-none">
+                        Maksimal ukuran file 2MB.
+                    </small>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
 
 <script>
-document.getElementById('profilePhoto').addEventListener('change', function(event) {
+document.getElementById('profile-photo').addEventListener('change', function(event) {
     const fileInput = event.target;
     const previewImg = document.getElementById('preview-photo');
     const errorMsg = document.getElementById('fileSizeError');
