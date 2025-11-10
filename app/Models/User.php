@@ -81,4 +81,9 @@ class User extends Authenticatable
 {
     return $this->hasOne(Athlete::class);
 }
+public function athletes()
+{
+    return $this->hasMany(\App\Models\Athlete::class, 'user_id');
+}
+
 }

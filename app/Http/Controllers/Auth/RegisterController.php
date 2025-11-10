@@ -18,18 +18,18 @@ class RegisterController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            if ($user->role === 'admin') {
+            if (in_array($user->role, ['admin', 'coach'])) {
                 return redirect('/dashboard');
             }
 
-            if ($user->role === 'user') {
-                return redirect('/user');
-            }
+            // if ($user->role === 'coach') {
+            //     return redirect('/dashboard');
+            // }
 
             return redirect('/');
         }
 
-        return view('auth.register'); // ganti sesuai nama blade register kamu
+        return view('auth.register'); // 
     }
 
     /**
@@ -56,13 +56,12 @@ class RegisterController extends Controller
         Auth::login($user);
 
         // Redirect sesuai role
-        if ($user->role === 'admin') {
-            return redirect('/dashboard');
+if (in_array($user->role, ['admin', 'coach'])) {            return redirect('/dashboard');
         }
 
-        if ($user->role === 'user') {
-            return redirect('/user');
-        }
+        // if ($user->role === 'coach') {
+        //     return redirect('/dashboard');
+        // }
 
         return redirect('/');
     }

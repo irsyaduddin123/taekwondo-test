@@ -20,6 +20,8 @@ class Athlete extends Model
     {
         return $this->hasMany(HasilPrestasi::class);
     }
+    
+    
 
 }
 

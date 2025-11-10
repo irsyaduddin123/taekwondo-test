@@ -19,36 +19,49 @@
 
         <!-- Menu kanan -->
         <div class="flex items-center space-x-4">
-            @auth
-                <span class="text-gray-700">Halo, {{ Auth::user()->name }}</span>
+    @auth
+        <span class="text-gray-700">Halo, {{ Auth::user()->name }}</span>
 
-                <!-- Tombol Dashboard -->
-                @if(Auth::user()->role === 'admin')
-                    <a href="{{ route('dashboard') }}" 
+        @php
+            // Cek apakah user sudah dikaitkan dengan salah satu athlete
+            $punyaAkses = Auth::user()->athletes()->exists();
+        @endphp
+
+        @if($punyaAkses)
+            {{-- Jika sudah dikaitkan → munculkan dashboard --}}
+            @if(Auth::user()->role === 'admin')
+                <a href="{{ route('dashboard') }}" 
                     class="bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
                     Dashboard Admin
-                    </a>
-                @elseif(Auth::user()->role === 'coach')
-                    <a href="{{ route('dashboard') }}" 
+                </a>
+            @elseif(Auth::user()->role === 'coach')
+                <a href="{{ route('dashboard') }}" 
                     class="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
                     Dashboard Coach
-                    </a>
-                @else
-                    <a href="{{ route('dashboarduser') }}" 
+                </a>
+            @else
+                <a href="{{ route('dashboarduser') }}" 
                     class="bg-gradient-to-r from-green-500 to-blue-600 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
                     Dashboard Kamu
-                    </a>
-                @endif
+                </a>
+            @endif
 
-                <!-- Tombol Logout -->
-                <form action="{{ route('logout') }}" method="POST" class="inline">
-                    @csrf
-                    <button type="submit" 
-                            class="bg-gradient-to-r from-red-500 to-red-700 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
-                        Logout
-                    </button>
-                </form>
-            @endauth
+        @else
+            {{-- Jika BELUM dikaitkan dengan athlete --}}
+            <span class="text-red-500 font-semibold">
+                Akun kamu belum diberikan akses oleh ADMIN.
+            </span>
+        @endif
+
+        <!-- Tombol Logout -->
+        <form action="{{ route('logout') }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" 
+                class="bg-gradient-to-r from-red-500 to-red-700 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
+                Logout
+            </button>
+        </form>
+    @endauth
 
             @guest
                 <!-- Tombol Login -->
