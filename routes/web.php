@@ -19,6 +19,8 @@ use App\Http\Controllers\User\UserProfileController;
 use App\Http\Controllers\ViewUserController;
 use App\Http\Controllers\TestComponentController;
 use App\Http\Controllers\AthleteController;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Http\Request;
 
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Route;
@@ -34,10 +36,67 @@ Route::get('/', function () {
 // Login & Logout
 // ========================
 Route::middleware('guest')->group(function () {
+
+    // LOGIN
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
+
+    // REGISTER
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
+
+    // =========================
+    // LUPA PASSWORD
+    // =========================
+    Route::get('/forgot-password', function () {
+        return view('auth.forgot-password');
+    })->name('password.request');
+
+    Route::post('/forgot-password', function (Request $request) {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with('status', __($status))
+            : back()->withErrors(['email' => __($status)]);
+    })->name('password.email');
+
+    // =========================
+    // RESET PASSWORD
+    // =========================
+    Route::get('/reset-password/{token}', function ($token) {
+    return view('auth.reset-password', [
+        'token' => $token
+    ]);
+})->name('password.reset');
+
+Route::post('/reset-password', function (Request $request) {
+
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->save();
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect()->route('login')->with('status', 'Password berhasil direset.')
+        : back()->withErrors(['email' => [__($status)]]);
+})->name('password.update');
+
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

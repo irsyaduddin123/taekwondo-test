@@ -30,6 +30,12 @@
                         </span>
                     </div>
                 @endforeach
+                <a href="{{ url('/send-athlete-birthday') }}"
+                    onclick="return confirm('Kirim ucapan ulang tahun ke semua pelatih?')"
+                    class="btn btn-success btn-sm mt-2">
+                    🎉 Ucapkan
+                </a>
+
             </div>
         </div>
     </div>

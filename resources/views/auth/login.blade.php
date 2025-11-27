@@ -130,7 +130,7 @@
             <input type="password" name="password" class="form-control" id="password" placeholder="********" required>
 
             <div class="text-end mt-1">
-                <a href="#" class="small text-decoration-none">Lupa password?</a>
+                <a href="{{ route('password.request') }}" class="small text-decoration-none">Lupa password?</a>
             </div>
         </div>
 
