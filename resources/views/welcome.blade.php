@@ -5,194 +5,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - Aplikasi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    body {
+        background: url('images/Scorpion.jpg') no-repeat center center fixed;
+        background-size: contain;
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+        z-index: 0;
+    }
+
+    /* Overlay gelap */
+    body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(3px);
+        z-index: 0;
+    }
+
+    /* Pastikan konten di atas overlay */
+    .content {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Tombol biru tua */
+    .btn-main {
+        background-color: #0A2A43; /* Biru tua */
+        border: 2px solid #0A2A43;
+        color: white;
+        padding: 0.5rem 1.2rem;
+        font-weight: 600;
+        border-radius: 0.6rem;
+        transition: 0.25s ease;
+        box-shadow: 0px 0px 8px rgba(0,0,0,0.4);
+        display: inline-block;
+    }
+
+    /* Hover biru muda */
+    .btn-main:hover {
+        background-color: #154b74; /* Biru sedikit terang */
+        border-color: #154b74;
+        transform: scale(1.03);
+    }
+</style>
+
 </head>
-<body class="bg-gradient-to-br from-indigo-500 to-blue-600 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-        <!-- Logo -->
-        <a href="{{ url('/') }}" 
-        class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-transparent">
-            Aplikasi
-        </a>
+<nav class="content bg-white/20 backdrop-blur-xl border-b border-white/30 shadow-md px-6 py-4 flex justify-between items-center">
 
-        <!-- Menu kanan -->
-        <div class="flex items-center space-x-4">
-    @auth
-        <span class="text-gray-700">Halo, {{ Auth::user()->name }}</span>
+    <a href="{{ url('/') }}" class="text-xl font-bold text-white drop-shadow">
+        Aplikasi
+    </a>
 
-        @php
-            // Cek apakah user sudah dikaitkan dengan salah satu athlete
-            $punyaAkses = Auth::user()->athletes()->exists();
-        @endphp
+    <div class="flex items-center space-x-4 text-white">
 
-        @if($punyaAkses)
-            {{-- Jika sudah dikaitkan → munculkan dashboard --}}
-            @if(Auth::user()->role === 'admin')
-                <a href="{{ route('dashboard') }}" 
-                    class="bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
-                    Dashboard Admin
-                </a>
-            @elseif(Auth::user()->role === 'coach')
-                <a href="{{ route('dashboard') }}" 
-                    class="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
-                    Dashboard Coach
-                </a>
+        @auth
+            <span class="font-semibold">Halo, {{ Auth::user()->name }}</span>
+
+            @php
+                $user = Auth::user();
+
+                // LOGIKA AKSES
+                if ($user->role === 'admin') {
+                    $punyaAkses = true;
+                } elseif ($user->role === 'coach') {
+                    $punyaAkses = true;
+                } else {
+                    // untuk atlet (role user)
+                    $punyaAkses = $user->athletes()->exists();
+                }
+            @endphp
+
+            @if($punyaAkses)
+
+                {{-- DASHBOARD --}}
+                @if($user->role === 'admin')
+                    <a href="{{ route('dashboard') }}"
+                       class="bg-blue-800 px-4 py-2 rounded-lg font-semibold text-white shadow hover:bg-blue-900 transition">
+                        Dashboard Admin
+                    </a>
+
+                @elseif($user->role === 'coach')
+                    <a href="{{ route('dashboard') }}"
+                       class="bg-blue-800 px-4 py-2 rounded-lg font-semibold text-white shadow hover:bg-blue-900 transition">
+                        Dashboard Coach
+                    </a>
+
+                @else
+                    <a href="{{ route('dashboarduser') }}"
+                       class="bg-blue-800 px-4 py-2 rounded-lg font-semibold text-white shadow hover:bg-blue-900 transition">
+                        Dashboard Kamu
+                    </a>
+                @endif
+
             @else
-                <a href="{{ route('dashboarduser') }}" 
-                    class="bg-gradient-to-r from-green-500 to-blue-600 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
-                    Dashboard Kamu
-                </a>
+                <span class="text-red-300 font-semibold">
+                    Akses belum diberikan admin
+                </span>
             @endif
 
-        @else
-            {{-- Jika BELUM dikaitkan dengan athlete --}}
-            <span class="text-red-500 font-semibold">
-                Akun kamu belum diberikan akses oleh ADMIN.
-            </span>
-        @endif
+            <!-- LOGOUT -->
+            <form action="{{ route('logout') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit"
+                    class="bg-blue-800 px-4 py-2 rounded-lg font-semibold text-white shadow hover:bg-blue-900 transition">
+                    Logout
+                </button>
+            </form>
+        @endauth
 
-        <!-- Tombol Logout -->
-        <form action="{{ route('logout') }}" method="POST" class="inline">
-            @csrf
-            <button type="submit" 
-                class="bg-gradient-to-r from-red-500 to-red-700 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
-                Logout
-            </button>
-        </form>
-    @endauth
+        @guest
+            <a href="{{ route('login') }}" class="bg-blue-800 px-4 py-2 rounded-lg font-semibold text-white shadow hover:bg-blue-900 transition">Login</a>
+            <a href="{{ route('register') }}" class="bg-blue-800 px-4 py-2 rounded-lg font-semibold text-white shadow hover:bg-blue-900 transition">Register</a>
+        @endguest
 
-            @guest
-                <!-- Tombol Login -->
-                <a href="{{ route('login') }}" 
-                class="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold shadow-md border border-indigo-600 hover:bg-indigo-50 transition">
-                Login
-                </a>
+    </div>
+</nav>
 
-                <!-- Tombol Register -->
-                <a href="{{ route('register') }}" 
-                class="bg-gradient-to-r from-indigo-600 to-pink-500 px-4 py-2 rounded-lg font-semibold text-white shadow-md hover:opacity-90 transition">
-                Register
-                </a>
-            @endguest
-        </div>
-    </nav>
 
     <!-- Hero Section -->
-    <main class="flex-grow flex flex-col items-center justify-center text-center text-white px-6 py-20">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4  
-                   bg-gradient-to-r from-yellow-500 via-pink-200 to-purple-500 bg-clip-text text-transparent">
-            Selamat Datang di Aplikasi
+    <main class="content flex-grow flex flex-col items-center justify-center text-center text-white px-6 py-20">
+        <h1 class="text-4xl md:text-5xl font-extrabold drop-shadow-lg mb-4">
+            Selamat Datang di Aplikasi Taekwondo Scorpion
         </h1>
-        {{-- <p class="text-lg md:text-xl max-w-xl">
-            Taekwondo scorpion✨
-        </p> --}}
     </main>
 
-    <!-- Tentang Kami -->
-    <section class="bg-white py-16 px-6 text-center text-gray-800">
-        <h2 class="text-3xl font-bold mb-6 text-indigo-600">Tentang Kami</h2>
-        <p class="max-w-2xl mx-auto mb-8">
-            Kami adalah komunitas Taekwondo Scorpion yang berkomitmen membangun prestasi atlet, 
-            meningkatkan kedisiplinan, serta memberikan kontribusi positif dalam dunia olahraga. 
-            Aplikasi ini dibuat untuk mendukung pengelolaan data, prestasi, dan kegiatan secara modern dan efisien.
-        </p>
-    </section>
-
-    <!-- Visi & Misi -->
-    <section class="bg-gray-50 py-16 px-6 text-center">
-        <h2 class="text-3xl font-bold mb-6 text-indigo-600">Visi & Misi</h2>
-        <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="font-semibold text-lg mb-3">Visi</h3>
-                <p>
-                    Menjadi pusat pelatihan taekwondo terbaik yang melahirkan atlet berprestasi dan berkarakter.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="font-semibold text-lg mb-3">Misi</h3>
-                <ul class="list-disc pl-5 space-y-2">
-                    <li>Meningkatkan kualitas latihan dengan sistem modern</li>
-                    <li>Menciptakan lingkungan yang disiplin dan positif</li>
-                    <li>Memajukan taekwondo di tingkat nasional dan internasional</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Galeri Foto -->
-<section class="bg-white py-16 px-6 text-center">
-    <h2 class="text-3xl font-bold mb-8 text-indigo-600">Galeri Foto</h2>
-    <p class="max-w-2xl mx-auto mb-12 text-gray-600">
-        Momen terbaik latihan, kompetisi, dan kegiatan komunitas Taekwondo Scorpion.
-    </p>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-        <!-- Foto 1 -->
-        <div class="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
-            <img src="{{ asset('images/logo-background.png') }}" 
-                 alt="Latihan Taekwondo 1" 
-                 class="w-full h-56 object-cover">
-        </div>
-
-        <!-- Foto 2 -->
-        <div class="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
-            <img src="{{ asset('images/taekwondo.png') }}" 
-                 alt="Latihan Taekwondo 2" 
-                 class="w-full h-56 object-cover">
-        </div>
-
-        <!-- Foto 3 -->
-        <div class="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
-            <img src="{{ asset('images/galeri/kompetisi1.jpg') }}" 
-                 alt="Kompetisi Taekwondo" 
-                 class="w-full h-56 object-cover">
-        </div>
-
-        <!-- Foto 4 -->
-        <div class="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
-            <img src="{{ asset('images/galeri/tim1.jpg') }}" 
-                 alt="Tim Taekwondo Scorpion" 
-                 class="w-full h-56 object-cover">
-        </div>
-
-        <!-- Tambahkan lebih banyak foto sesuai kebutuhan -->
-    </div>
-</section>
-
-
-@php
-    $waNumber = '6281228132856';
-    $waMessage = urlencode('Halo, saya ingin bertanya tentang Taekwondo Scorpion.');
-@endphp
-
-<!-- Kontak -->
-<section class="bg-gray-50 py-16 px-6 text-center">
-    <h2 class="text-3xl font-bold mb-6 text-indigo-600">Kontak</h2>
-    <p class="mb-4">Hubungi kami untuk informasi lebih lanjut</p>
-    <p class="font-semibold">
-        Email: 
-        <a href="mailto:info@taekwondoscorpion.com" class="text-indigo-600 hover:underline">
-            info@taekwondoscorpion.com
-        </a>
-    </p>
-    <p class="font-semibold">Telp: +62 812-3456-7890</p>
-
-    <!-- Tombol WhatsApp -->
-    <div class="mt-6">
-        <a href="https://wa.me/{{ $waNumber }}?text={{ $waMessage }}" 
-           target="_blank"
-           class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition">
-            <i class="fab fa-whatsapp text-xl"></i>
-            WhatsApp Kami
-        </a>
-    </div>
-</section>
-
     <!-- Footer -->
-    <footer class="bg-white shadow-md text-center py-4 text-gray-600 text-sm">
+    <footer class="content bg-white/20 backdrop-blur-lg text-center py-4 text-gray-200 text-sm border-t border-white/30">
         &copy; {{ date('Y') }} Taekwondo Scorpion. All rights reserved.
     </footer>
+
 </body>
 </html>
